@@ -1,0 +1,593 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#050d08">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Escape Library">
+<title>Escape Library – Knihovna ČZU</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400;1,400;1,600&display=swap" rel="stylesheet">
+
+<style>
+:root {
+  --bg:   #050d08;
+  --sur:  #0b1810;
+  --sur2: #122018;
+  --bor:  #1b3322;
+  --acc:  #4ade80;
+  --acc-d:#15803d;
+  --acc-g:rgba(74,222,128,0.18);
+  --txt:  #d1fae5;
+  --txt-m:#5e8c6e;
+  --txt-s:#a3c4b0;
+  --bad:  #f87171;
+  --wrn:  #fbbf24;
+}
+*{box-sizing:border-box;margin:0;padding:0;}
+html,body{height:100%;}
+body{background:var(--bg);color:var(--txt);font-family:'Space Mono',monospace;overflow-x:hidden;}
+body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.035) 0,rgba(0,0,0,.035) 1px,transparent 1px,transparent 3px);pointer-events:none;z-index:9999;}
+
+.wrap{max-width:460px;margin:0 auto;padding:0 1rem;}
+.label{font-size:.55rem;letter-spacing:.15em;color:var(--txt-m);}
+.small{font-size:.74rem;line-height:1.75;color:var(--txt-s);}
+
+.card{background:var(--sur);border:1px solid var(--bor);border-radius:12px;padding:1.2rem 1.25rem;}
+.inset{background:var(--bg);border:1px solid var(--bor);border-radius:8px;padding:.8rem 1rem;}
+
+.btn{display:block;width:100%;font-family:'Space Mono',monospace;font-weight:700;font-size:.76rem;letter-spacing:.07em;border:none;border-radius:8px;padding:.8rem 1rem;cursor:pointer;transition:opacity .15s,transform .1s;}
+.btn:active{transform:scale(.97);}
+.btn:disabled{opacity:.3;cursor:not-allowed;transform:none;}
+.btn-go{background:var(--acc);color:#052e16;}
+.btn-go:hover:not(:disabled){opacity:.85;}
+.btn-ghost{background:transparent;color:var(--txt-m);border:1px solid var(--bor);}
+.btn-ghost:hover:not(:disabled){border-color:var(--acc-d);color:var(--txt);}
+
+.field{background:var(--bg);border:1px solid var(--bor);border-radius:8px;color:var(--acc);font-family:'Space Mono',monospace;font-size:1rem;letter-spacing:.05em;padding:.75rem 1rem;width:100%;outline:none;caret-color:var(--acc);transition:border-color .2s;}
+.field:focus{border-color:var(--acc-d);}
+.field::placeholder{color:var(--txt-m);opacity:.4;font-size:.78rem;font-weight:400;}
+
+.v-quote{font-family:'Lora',serif;font-style:italic;font-size:.88rem;line-height:1.85;color:#86efac;border-left:2px solid var(--acc-d);padding-left:.9rem;}
+.poem{font-family:'Lora',serif;font-style:italic;font-size:.88rem;line-height:2.1;color:#86efac;text-align:center;}
+
+.dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.58rem;font-weight:700;border:1.5px solid;flex-shrink:0;transition:all .3s;}
+.done  {background:var(--acc-d);border-color:var(--acc);color:#052e16;}
+.active{background:var(--acc);border-color:var(--acc);color:#052e16;box-shadow:0 0 14px var(--acc-g);}
+.locked{background:transparent;border-color:var(--bor);color:var(--txt-m);}
+
+.ok {background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);color:var(--acc);border-radius:8px;padding:.65rem 1rem;font-size:.76rem;}
+.err{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);color:var(--bad);border-radius:8px;padding:.65rem 1rem;font-size:.76rem;}
+.tip{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.3);color:var(--wrn);border-radius:8px;padding:.65rem 1rem;font-size:.76rem;}
+
+#pb{height:3px;background:var(--acc);border-radius:2px;transition:width .5s;box-shadow:0 0 8px var(--acc);}
+
+.pillar{background:var(--bg);border:1px solid var(--bor);border-radius:8px;padding:.7rem .85rem;cursor:pointer;transition:border-color .2s,background .2s;-webkit-tap-highlight-color:transparent;}
+.pillar.lit{background:var(--acc-g);border-color:var(--acc-d);}
+.p-letter{font-size:1.45rem;font-weight:700;color:var(--acc);line-height:1;}
+.p-word{font-size:.78rem;font-weight:700;color:var(--txt);margin:.15rem 0 .1rem;}
+.p-desc{font-size:.68rem;color:var(--txt-s);line-height:1.5;}
+
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+@keyframes slide{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+@keyframes pulse{0%,100%{box-shadow:0 0 6px var(--acc-g)}50%{box-shadow:0 0 22px rgba(74,222,128,.4)}}
+.slide{animation:slide .35s ease forwards;}
+.pulse{animation:pulse 2s ease-in-out infinite;}
+.shake-it{animation:shake .4s ease;}
+
+#photo-prev{display:none;width:100%;max-height:200px;object-fit:cover;border-radius:8px;border:1px solid var(--acc-d);margin-top:.75rem;}
+
+#s-intro{display:flex;}
+#s-game {display:none;}
+#s-win  {display:none;}
+</style>
+</head>
+<body>
+
+<!-- ═══════════ INTRO ═══════════ -->
+<div id="s-intro" style="min-height:100vh;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;">
+<div style="width:100%;max-width:440px;">
+
+  <div style="text-align:center;margin-bottom:2rem;">
+    <div style="font-size:2.8rem;margin-bottom:.5rem;">🌿</div>
+    <h1 style="font-size:1.25rem;font-weight:700;color:var(--acc);letter-spacing:.14em;">ESCAPE LIBRARY</h1>
+    <p class="label" style="margin-top:.35rem;">KNIHOVNA ČZU &nbsp;·&nbsp; ZÁCHRANNÁ MISE</p>
+  </div>
+
+  <div class="card" style="margin-bottom:1rem;">
+    <p class="label" style="margin-bottom:.6rem;">ÚVOD DO PŘÍBĚHU</p>
+    <p class="v-quote">"Nedali mi to... Nechápou moji genialitu! Do hodiny pocítí celá univerzita můj hněv. Pokud chcete přežít, musíte myslet jako včely – pilně a přesně. Hledejte tam, kde se pravda odděluje od mýtů."</p>
+    <p class="small" style="margin-top:.6rem;">— neúspěšný magistrant, pachatel pylového útoku</p>
+  </div>
+
+  <div class="card" style="margin-bottom:1.25rem;">
+    <p class="label" style="margin-bottom:.65rem;">PRAVIDLA HRY</p>
+    <div class="small" style="color:var(--txt);line-height:2.3;">
+      <div>⏱ Časový limit: <strong style="color:var(--acc);">60 minut</strong></div>
+      <div>👥 Tým: <strong>2–6 hráčů</strong></div>
+      <div>💡 Nápověda: <strong style="color:var(--wrn);">−20 bodů</strong> za každé použití</div>
+      <div>✗ Špatná odpověď: <strong style="color:var(--bad);">−10 bodů</strong></div>
+      <div>🏁 Celkem: <strong style="color:var(--acc);">7 stanovišť</strong></div>
+    </div>
+  </div>
+
+  <div style="margin-bottom:1.1rem;">
+    <label class="label" style="display:block;margin-bottom:.4rem;">NÁZEV TÝMU</label>
+    <input class="field" id="team-name" placeholder="zadej název týmu…" maxlength="30" style="text-align:center;">
+  </div>
+
+  <button class="btn btn-go pulse" onclick="startGame()">▶&nbsp;&nbsp;SPUSTIT MISI</button>
+  <p class="small" style="text-align:center;margin-top:.85rem;">Naskenujte QR kód u Výpůjčního pultu a poslouchejte nahrávku pachatele.</p>
+
+</div>
+</div>
+
+<!-- ═══════════ GAME ════════════ -->
+<div id="s-game" style="min-height:100vh;padding-bottom:3rem;">
+
+  <div id="hdr" style="background:var(--sur);border-bottom:1px solid var(--bor);padding:.65rem 1rem;position:sticky;top:0;z-index:50;">
+    <div style="max-width:460px;margin:0 auto;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem;">
+        <div>
+          <div class="label">TÝM</div>
+          <div id="h-team" style="font-size:.82rem;font-weight:700;color:var(--acc);">—</div>
+        </div>
+        <div style="text-align:center;">
+          <div class="label">ČAS</div>
+          <div id="h-time" style="font-size:1.45rem;font-weight:700;color:var(--acc);font-variant-numeric:tabular-nums;line-height:1.1;">60:00</div>
+        </div>
+        <div style="text-align:right;">
+          <div class="label">SKÓRE</div>
+          <div id="h-score" style="font-size:.82rem;font-weight:700;color:var(--wrn);">700</div>
+        </div>
+      </div>
+      <div style="background:var(--bor);border-radius:2px;height:3px;"><div id="pb" style="width:0%;"></div></div>
+    </div>
+  </div>
+
+  <div style="max-width:460px;margin:.85rem auto;padding:0 1rem;">
+    <div id="dots" style="display:flex;gap:5px;justify-content:center;align-items:center;"></div>
+  </div>
+
+  <div class="wrap">
+    <div id="ban" style="margin-bottom:.75rem;"></div>
+    <div id="station" class="slide"></div>
+  </div>
+
+</div>
+
+<!-- ═══════════ WIN ═════════════ -->
+<div id="s-win" style="min-height:100vh;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;text-align:center;">
+<div style="width:100%;max-width:440px;">
+
+  <div style="font-size:3.5rem;margin-bottom:.75rem;">🎉</div>
+  <h2 style="font-size:1.35rem;font-weight:700;color:var(--acc);letter-spacing:.1em;">MISE SPLNĚNA!</h2>
+  <p class="label" style="margin:.4rem 0 1.5rem;">PYLOVÝ ÚTOK ZASTAVEN &nbsp;·&nbsp; ČZU ZACHRÁNĚNA</p>
+
+  <div class="card" style="margin-bottom:1rem;text-align:left;">
+    <p class="v-quote">"Uznávám… Mohl jsem pro svou magisterskou práci udělat o něco více. Vaše znalost Knihovny ČZU je působivá. Možná se někdy zaregistruji."</p>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-bottom:1rem;">
+    <div class="inset" style="text-align:center;"><div class="label" style="margin-bottom:.2rem;">SKÓRE</div><div id="v-score" style="font-size:1.35rem;font-weight:700;color:var(--wrn);">—</div></div>
+    <div class="inset" style="text-align:center;"><div class="label" style="margin-bottom:.2rem;">ČAS</div><div id="v-time" style="font-size:1.35rem;font-weight:700;color:var(--acc);">—</div></div>
+    <div class="inset" style="text-align:center;"><div class="label" style="margin-bottom:.2rem;">NÁPOVĚDY</div><div id="v-hints" style="font-size:1.35rem;font-weight:700;color:var(--bad);">—</div></div>
+  </div>
+
+  <div class="card" style="margin-bottom:1rem;text-align:left;">
+    <p class="label" style="margin-bottom:.7rem;">CO JSI SE NAUČIL/A</p>
+    <div id="v-learn" class="small" style="color:var(--txt);line-height:2.4;"></div>
+  </div>
+
+  <div class="card" style="margin-bottom:1.25rem;background:rgba(74,222,128,.06);border-color:var(--acc-d);">
+    <p class="small" style="text-align:center;color:var(--acc);">🎁 Vyzvedni si odměnu u <strong style="color:var(--acc);">Výpůjčního pultu</strong>!</p>
+  </div>
+
+  <button class="btn btn-ghost" onclick="resetGame()">↩&nbsp;&nbsp;HRÁT ZNOVU</button>
+
+</div>
+</div>
+
+<script>
+// ─── NORMALIZATION ────────────────────────────────────────
+// Strips diacritics, lowercases, removes all spaces.
+// Also strips "doi:" prefix for station 3.
+function norm(raw) {
+  let s = raw.trim().toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/^doi\s*:\s*/,'')
+    .replace(/\s+/g,'');
+  return s;
+}
+
+// ─── STATION DATA ─────────────────────────────────────────
+// ⚠️  Replace YOUTUBE_URL_HERE with the actual YouTube link
+const YT_URL = 'https://youtu.be/xNC5-X_Arm4';
+
+const ST = [
+  {
+    id:1, name:'Výpůjční pult', pts:100,
+    loc:'📍 Vstupní hala – Výpůjční pult / Loan desk',
+    yt: true,
+    villain:'"Nedali mi to... Nechápou moji genialitu! Do hodiny pocítí celá univerzita můj hněv. Pokud chcete přežít, musíte myslet jako včely – pilně a přesně. Hledejte tam, kde se pravda odděluje od mýtů."',
+    story:'Naskenuj QR kód a poslechni nahrávku pachatele.<br><br>Poté otevři <strong>online katalog Aleph</strong> (web knihovny) a vyhledej knihu:<br><div class="inset" style="margin:.65rem 0;text-align:center;font-size:.92rem;color:var(--acc);">Včelí produkty mýtů zbavené</div>Zjisti její <strong>signaturu</strong> a zadej ji níže (mezery nevadí).',
+    task:'Jaká je signatura knihy v katalogu Aleph?',
+    ph:'signatura (Z 00000/0)',
+    ans:['z22611/1'],
+    next:'Skvěle! O geneticky modifikovaných rostlinách psal ten šílenec v časopise Včelařství 2010. Utíkejte do Čítárny!',
+    hints:[
+      '💡 Otevři lib.czu.cz → Katalog knih (Aleph) → do pole Název zadej: Včelí produkty mýtů zbavené',
+      '💡 Signatura je kód knihy ve formátu: písmeno(a) + čísla + lomítko + číslo  (příklad: X 12345/6)',
+      '💡 Signatura začíná písmenem Z a obsahuje číslo 22611'
+    ]
+  },
+  {
+    id:2, name:'Čítárna', pts:100,
+    loc:'📍 2. patro – Čítárna (místnost 231b)',
+    villain:'"Myslíte si, že přečtením starých časopisů mě zastavíte? Ty znalosti jsou zastaralé – stejně jako celý váš systém! Ale hledejte dál… pokud odvahu máte."',
+    story:'Jdi do <strong>Čítárny</strong> (2. patro, m. 231b). V sekci tištěných periodik najdi <strong>laminovanou herní kartu</strong> přilepenou u regálu Včelařství.<br><br>Karta tě navede na článek:<div class="inset" style="margin:.65rem 0;line-height:1.85;font-size:.8rem;"><span class="label">ČASOPIS</span><br><strong style="color:var(--txt);">Včelařství</strong> – ročník 2010, č. 3<br><span class="label" style="margin-top:.35rem;display:block;">ČLÁNEK</span>Geneticky modifikované rostliny: riziko, nebo naděje pro naše včelstva?</div>Na jaké <strong>stránce článek začíná</strong>?',
+    task:'Zadej číslo stránky, kde článek v časopisu začíná.',
+    ph:'číslo stránky',
+    ans:['82'],
+    next:'Máte to! Ale zahořklý student se pokusil smazat digitální stopu protilátky. Rychle do Počítačové studovny – musíme ty kusy poslepovat dohromady!',
+    hints:[
+      '💡 Hledej laminovanou herní kartu přímo na regálu nebo polici sekce Včelařství',
+      '💡 Karta přesně říká, na jakou stranu se podívat – číslo je na kartě napsané',
+      '💡 Číslo stránky je dvojciferné, pohybuje se v rozmezí 80–90'
+    ]
+  },
+  {
+    id:3, name:'Počítačová studovna', pts:100,
+    loc:'📍 Přízemí – Počítačová studovna (místnost 140)',
+    villain:'"Myslíte, že databáze jsou vaši přátelé? Jsou to jen labyrinty, ve kterých zabloudíte. Jen opravdový génius umí z chaosu vytáhnout pravdu."',
+    story:'Přihlas se na <strong>Web of Science</strong> (přes web knihovny) a vyhledej článek. Z pachatelových šifrovaných zápisků zbyl jen tento útržek:<div class="inset" style="margin:.65rem 0;text-align:center;font-size:.95rem;letter-spacing:.05em;color:var(--acc);line-height:1.7;">H _ _ _ Y &nbsp;as a&nbsp; N _ _ _ _ _ L<br>A N T I _ _ _ _ _ B _ _ L</div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.4rem;margin:.6rem 0;"><div class="inset" style="text-align:center;font-size:.68rem;line-height:1.6;"><strong style="color:var(--acc);">1. slovo</strong><br>co vyrábějí<br>včely</div><div class="inset" style="text-align:center;font-size:.68rem;line-height:1.6;"><strong style="color:var(--acc);">2. slovo</strong><br>opak<br>umělého</div><div class="inset" style="text-align:center;font-size:.68rem;line-height:1.6;"><strong style="color:var(--acc);">3. slovo</strong><br>působí proti<br>mikroorganismům</div></div>Najdi článek a zadej jeho <strong>DOI</strong> (s nebo bez předpony "DOI:").',
+    task:'Zadej DOI nalezeného článku.',
+    ph:'DOI článku  (10.xxxx/…)',
+    ans:['10.3390/antibiotics14030255'],
+    next:'Jednoznačný identifikátor nalezen! Biologická data k protilátce ale nebyla správně zálohována. Poslední fragment se skrývá v Tiché studovně – potichu našlapuj a neruš!',
+    hints:[
+      '💡 Celý název hledaného článku: „Honey as a Natural Antimicrobial" – zadej ho do Web of Science',
+      '💡 DOI začíná vždy číslem 10, poté tečka a číslo vydavatele. Lze zadat i jako „DOI: 10.xxxx/…"',
+      '💡 Článek je z časopisu Antibiotics, rok 2025, svazek 14, číslo 3'
+    ]
+  },
+  {
+    id:4, name:'Velká studovna (Tichá zóna)', pts:100,
+    loc:'📍 Přízemí – Velká studovna, Tichá zóna',
+    villain:'"V tichu studovny se skrývá pravda, která by mě mohla zastavit. Ale vy ji nikdy nenajdete – vám věda mluví jiným jazykem!"',
+    story:'Jdi do <strong>Velké studovny</strong>, do Tiché zóny. Najdi <strong>QR kód na boku regálu</strong> a dešifruj básničku:',
+    poem:'v tichu studovny odpověď se skrývá,\nne každé BIO logické bývá.\nrozpleť ta slova, co na regále tichém spí,\nObecná genetika směr napoví\na správná skupina své jméno odhalí.',
+    story2:'Najdi regál s oblastí <strong>Obecná genetika</strong> a zapiš <strong>označení skupiny</strong> (název regálu).',
+    task:'Jaký je název skupiny (označení) na regále? (Formát: XXX 000)',
+    ph:'označení skupiny (BIO 000)',
+    ans:['bio575','bio 575'],
+    next:'Skvělé, regál jste našli! Protilátka je ale zatím jen shluk informací. Musíte data sdílet podle pravidel Open Science. Utíkejte za experty do CKSD!',
+    hints:[
+      '💡 Klíčové slovo básně je „BIO" – hledej sekci BIO ve Velké studovně, Tichá zóna',
+      '💡 Označení skupiny začíná zkratkou BIO a za ní jsou čísla (jako signatura)',
+      '💡 Číslo skupiny je 575 – hledej regál BIO 575 v oblasti Obecná genetika'
+    ]
+  },
+  {
+    id:5, name:'Centrum Open Science (CKSD)', pts:100,
+    loc:'📍 Chodba u CKSD – kancelář 221c',
+    villain:'"Open Science? Sdílení dat? Jen hezká slova pro naivní! Skutečná věda si svá tajemství střeží. Nebo ne?"',
+    story:'Navštiv <strong>Centrum kompetencí pro správu dat</strong> nebo jeho webové stránky:<div style="margin:.55rem 0;"><a href="https://lib.czu.cz/cs/r-16393-open-science/r-16854-sprava-dat" target="_blank" rel="noopener" style="color:var(--acc);font-size:.75rem;word-break:break-all;">lib.czu.cz → Open Science → Správa dat</a></div>Aby laboratoře po celém světě mohly okamžitě replikovat protilátku, musíte data sdílet podle <strong>4 principů</strong>. Klikni na každý pilíř níže a zjisti jeho název:',
+    fair:true,
+    task:'Jaký 4písmenný akronym tvoří tyto 4 principy výzkumných dat?',
+    ph:'čtyřpísmenný akronym',
+    ans:['fair'],
+    next:'Záchranná data jsou FAIR a letí do světa! Teď potřebuješ znát svého osobního průvodce studiem. Najdeš ji v kanceláři č. 209!',
+    hints:[
+      '💡 Klikni postupně na všechny 4 pilíře – každý odhalí jedno slovo začínající jiným písmenem',
+      '💡 Hledáš akronym složený z počátečních písmen 4 anglických slov',
+      '💡 Pořadí: F (dohledatelnost) · A (přístupnost) · I (interoperabilita) · R (opětovná použitelnost)'
+    ]
+  },
+  {
+    id:6, name:'Kancelář 209', pts:100,
+    loc:'📍 2. patro – kancelář č. 209',
+    villain:'"Individuální konzultace? Jen plýtvání časem! Já jsem vše věděl sám lépe – a kde jsem skončil? Ha!"',
+    story:'Jdi do <strong>2. patra</strong>, kancelář <strong>č. 209</strong> – Oddělení informační podpory a vzdělávání.<div class="inset" style="margin:.65rem 0;font-size:.78rem;line-height:1.9;">Psaní závěrečné práce nebo boj s citacemi nemusí být noční můra. Knihovna ČZU nabízí <strong>semináře, webináře i individuální konzultace</strong>, díky kterým bude tvé studium kvalitní a bezproblémové.<br><br>Jaký je <strong>oficiální e-mail</strong>, na který si lze bezplatně objednat individuální pomoc?</div>E-mail najdeš na vizitce u dveří č. 209 nebo na webu knihovny.',
+    task:'Zadej e-mailovou adresu pro objednání konzultace v Knihovně ČZU.',
+    ph:'xxx@lib.czu.cz',
+    ans:['konzultace@lib.czu.cz'],
+    next:'Přesně tak – jsme tu pro vás! Antidotum je vypuštěno, ČZU zachráněna. Jděte se nadechnout na terasu a potvrďte úspěch mise!',
+    hints:[
+      '💡 E-mail je fyzicky napsán na vizitce nebo cedulce přímo u dveří kanceláře 209, 2. patro',
+      '💡 Formát: slovo@lib.czu.cz – doména serveru je lib.czu.cz',
+      '💡 První část e-mailu (před @) je české podstatné jméno pro domluvu se specialistou'
+    ]
+  },
+  {
+    id:7, name:'Terasa – Finále!', pts:100,
+    loc:'📍 Venkovní terasa Knihovny ČZU',
+    villain:'"Neexistuje možnost, aby někdo objevil protilátku. Ale hraju fér. Pokud ji vystříkáte z terasy v časovém limitu, uznám svou porážku a přihlásím se do knihovny."',
+    story:'🏁 <strong>FINÁLNÍ STANOVIŠTĚ!</strong><br><br>Vyjdi na <strong>venkovní terasu</strong> Knihovny ČZU (přes 2. patro).<br><br>1. Nech aplikaci ověřit tvou <strong>GPS polohu</strong>.<br>2. Vyfoť pohled z terasy <strong>směrem na Pražský hrad</strong>.<br>3. Nahraj fotku jako důkaz splnění mise.<br>4. Stiskni tlačítko vítězství! 🌿',
+    gps:true,
+    gpsTarget:{ lat:50.1344, lng:14.3731, r:250 },
+    task:'Ověř GPS polohu a nahraj foto z terasy jako důkaz.',
+    hints:[
+      '💡 Na terasu se dostaneš přes 2. patro budovy – zeptej se obsluhy, pokud si nejsi jistý/á',
+      '💡 GPS může trvat několik sekund – povolte přístup k poloze a počkejte na ověření',
+      '💡 Jakákoliv fotka vložená do aplikace se počítá – hlavně že jste na terase!'
+    ]
+  }
+];
+
+const LEARNINGS = [
+  '✅ Vyhledávání knih v online katalogu <strong>Aleph</strong>',
+  '✅ Orientace v <strong>Čítárně</strong> – tištěná periodika',
+  '✅ Práce s mezinárodní databází <strong>Web of Science</strong>',
+  '✅ Hledání knih ve <strong>Velké studovně</strong> podle signatury',
+  '✅ Principy <strong>Open Science</strong> a správy dat (FAIR)',
+  '✅ Využití <strong>konzultačních služeb</strong> Knihovny ČZU',
+  '✅ Fotodůkaz z <strong>terasy</strong> – mise splněna! 📸'
+];
+
+// ─── STATE ────────────────────────────────────────────────
+let G = { team:'',cur:0,score:700,hints:0,timerRef:null,startMs:0,elapsed:0,photoOk:false,gpsOk:false,hintIdx:[] };
+
+// ─── TIMER ───────────────────────────────────────────────
+function startTimer(){
+  G.startMs=Date.now();
+  G.timerRef=setInterval(()=>{
+    G.elapsed=Math.floor((Date.now()-G.startMs)/1000);
+    const rem=Math.max(0,3600-G.elapsed);
+    const el=document.getElementById('h-time');
+    el.textContent=f2(Math.floor(rem/60))+':'+f2(rem%60);
+    el.style.color=rem<=300?'var(--bad)':rem<=600?'var(--wrn)':'var(--acc)';
+    if(!rem)clearInterval(G.timerRef);
+  },1000);
+}
+function f2(n){return String(n).padStart(2,'0');}
+function elapsedStr(){const m=Math.floor(G.elapsed/60),s=G.elapsed%60;return f2(m)+':'+f2(s);}
+
+// ─── HEAD / DOTS ──────────────────────────────────────────
+function refreshHead(){
+  document.getElementById('h-team').textContent=G.team;
+  document.getElementById('h-score').textContent=Math.max(0,G.score);
+  document.getElementById('pb').style.width=(G.cur/ST.length*100)+'%';
+}
+function refreshDots(){
+  const c=document.getElementById('dots');c.innerHTML='';
+  ST.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='dot '+(i<G.cur?'done':i===G.cur?'active':'locked');
+    d.title=ST[i].name;d.textContent=i<G.cur?'✓':(i+1);
+    c.appendChild(d);
+  });
+}
+
+// ─── BANNER ──────────────────────────────────────────────
+function banner(msg,cls,ms=3200){
+  const a=document.getElementById('ban');
+  a.innerHTML=`<div class="${cls}" style="margin-bottom:.75rem;">${msg}</div>`;
+  if(ms>0)setTimeout(()=>{if(a.firstChild)a.innerHTML='';},ms);
+}
+
+// ─── RENDER ──────────────────────────────────────────────
+let fairLit=[false,false,false,false];
+
+function render(){
+  const s=ST[G.cur];
+  const box=document.getElementById('station');
+  box.className='slide';void box.offsetWidth;
+
+  box.innerHTML=`
+    <div class="card" style="margin-bottom:.85rem;">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.75rem;">
+        <div>
+          <div class="label" style="margin-bottom:.15rem;">${s.loc}</div>
+          <h2 style="font-size:.95rem;font-weight:700;color:var(--acc);">${s.name}</h2>
+        </div>
+        <div style="font-size:.62rem;background:var(--sur2);border:1px solid var(--bor);border-radius:6px;padding:.2rem .55rem;color:var(--txt-m);white-space:nowrap;">${G.cur+1}&thinsp;/&thinsp;${ST.length}</div>
+      </div>
+      ${s.yt&&YT_URL!=='YOUTUBE_URL_HERE'?ytBtn():''}
+      <div class="inset" style="margin-bottom:.8rem;"><p class="v-quote">${s.villain}</p></div>
+      <div class="small" style="color:var(--txt);line-height:1.9;">${s.story}</div>
+      ${s.poem?poemBlock(s.poem):''}
+      ${s.story2?`<div class="small" style="color:var(--txt);line-height:1.9;margin-top:.65rem;">${s.story2}</div>`:''}
+      ${s.fair?fairBlock():''}
+    </div>
+    <div class="card" style="margin-bottom:.75rem;">
+      <p class="label" style="margin-bottom:.5rem;">TVŮJ ÚKOL</p>
+      <p class="small" style="color:var(--txt);margin-bottom:.9rem;">${s.task}</p>
+      ${s.gps?gpsBlock():inputBlock(s)}
+    </div>
+    <button class="btn btn-ghost" onclick="useHint()" style="font-size:.72rem;margin-bottom:.4rem;">💡 Nápověda &nbsp;(−20 bodů)</button>
+    <div id="hbox" style="display:none;" class="inset"><p id="htxt" style="font-size:.78rem;color:var(--wrn);"></p></div>`;
+
+  if(!s.gps){
+    const inp=document.getElementById('ans');
+    if(inp)inp.addEventListener('keydown',e=>{if(e.key==='Enter')checkAns();});
+  }else{
+    const pi=document.getElementById('photo-inp');
+    if(pi)pi.addEventListener('change',handlePhoto);
+  }
+  if(s.fair){fairLit=[false,false,false,false];}
+}
+
+function ytBtn(){
+  return `<a href="${YT_URL}" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:.6rem;background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.25);border-radius:8px;padding:.65rem .9rem;margin-bottom:.8rem;text-decoration:none;">
+    <span style="font-size:1.2rem;">▶️</span>
+    <div><div style="font-size:.72rem;font-weight:700;color:var(--bad);">PŘEHRÁT NAHRÁVKU PACHATELE</div><div style="font-size:.65rem;color:var(--txt-m);">otevře YouTube</div></div>
+  </a>`;
+}
+
+function inputBlock(s){
+  return `<input class="field" id="ans" placeholder="${s.ph}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" maxlength="80" style="margin-bottom:.75rem;">
+    <button class="btn btn-go" onclick="checkAns()">→&nbsp;&nbsp;ODESLAT ODPOVĚĎ</button>`;
+}
+
+function poemBlock(poem){
+  return `<div style="margin:.75rem 0;padding:.85rem;background:var(--bg);border-radius:8px;border:1px solid var(--bor);"><p class="poem">${poem.replace(/\n/g,'<br>')}</p></div>`;
+}
+
+const FAIR_D=[
+  {l:'F',w:'Findable',     d:'Data jsou snadno dohledatelná pro lidi i stroje pomocí unikátního identifikátoru (DOI).'},
+  {l:'A',w:'Accessible',   d:'K datům existuje jasně definovaný a otevřený protokol přístupu, pokud možno bez registrace.'},
+  {l:'I',w:'Interoperable',d:'Data používají standardizované formáty a slovníky pro integraci s jinými daty.'},
+  {l:'R',w:'Reusable',     d:'Data jsou bohatě popsána metadaty, aby je mohli znovu využít další výzkumníci.'}
+];
+
+function fairBlock(){
+  return `<div style="margin-top:.8rem;">
+    <p class="label" style="margin-bottom:.5rem;">4 PILÍŘE – klikni na každý pilíř</p>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;" id="fg">
+      ${FAIR_D.map((p,i)=>`<div class="pillar" id="pl${i}" onclick="litPillar(${i})">
+        <div class="p-letter">${p.l}</div><div class="p-word">${p.w}</div><div class="p-desc">${p.d}</div>
+      </div>`).join('')}
+    </div>
+    <div id="fst" style="text-align:center;font-size:.72rem;color:var(--txt-m);margin-top:.5rem;">Klikni na všechny 4 pilíře pro odhalení akronymu</div>
+  </div>`;
+}
+
+function litPillar(i){
+  fairLit[i]=true;
+  document.getElementById('pl'+i).classList.add('lit');
+  const all=fairLit.every(Boolean);
+  const st=document.getElementById('fst');
+  if(all){st.textContent='✓ Všechny pilíře aktivovány! Akronym = F · A · I · R';st.style.color='var(--acc)';}
+  else{const r=4-fairLit.filter(Boolean).length;st.textContent=`Zbývají ${r} pilíř/e…`;}
+}
+
+function gpsBlock(){
+  return `<div style="margin-bottom:.75rem;">
+    <button class="btn btn-ghost" id="gps-btn" onclick="doGPS()" style="margin-bottom:.45rem;font-size:.74rem;">📡 Ověřit GPS polohu (musíš být na terase!)</button>
+    <div id="gst" style="font-size:.7rem;color:var(--txt-m);text-align:center;min-height:.9rem;"></div>
+  </div>
+  <div style="margin-bottom:.75rem;">
+    <label for="photo-inp" id="photo-lbl" style="display:block;width:100%;text-align:center;cursor:pointer;padding:.75rem 1rem;font-family:'Space Mono',monospace;font-size:.74rem;font-weight:700;letter-spacing:.06em;background:transparent;color:var(--txt-m);border:1px solid var(--bor);border-radius:8px;transition:border-color .2s,color .2s;">
+      📸 Nahrát foto z terasy (směr Pražský hrad)
+    </label>
+    <input type="file" id="photo-inp" accept="image/*" capture="environment" style="display:none;">
+    <img id="photo-prev" alt="náhled fotky">
+  </div>
+  <button class="btn btn-go pulse" id="fin-btn" onclick="finishGame()" disabled>🌿&nbsp;&nbsp;VYPUSTIT PROTILÁTKU A VYHRÁT!</button>`;
+}
+
+// ─── CHECK ANSWER ─────────────────────────────────────────
+function checkAns(){
+  const el=document.getElementById('ans');if(!el)return;
+  const given=norm(el.value);if(!given){shakeEl(el);return;}
+  const s=ST[G.cur];
+  const ok=s.ans.some(a=>norm(a)===given);
+  if(ok){
+    G.score+=s.pts;G.cur++;
+    refreshHead();refreshDots();
+    if(G.cur>=ST.length){endGame();return;}
+    render();
+    banner('✓ '+s.next,'ok',3200);
+    window.scrollTo({top:0,behavior:'smooth'});
+  }else{
+    shakeEl(el);
+    banner('✗ Špatná odpověď – zkus to znovu nebo použij nápovědu.','err',2800);
+    G.score=Math.max(0,G.score-10);refreshHead();
+    el.value='';el.focus();
+  }
+}
+function shakeEl(el){el.classList.add('shake-it');setTimeout(()=>el.classList.remove('shake-it'),450);}
+
+// ─── HINT ────────────────────────────────────────────────
+function useHint(){
+  const s=ST[G.cur];
+  if(!G.hintIdx[G.cur])G.hintIdx[G.cur]=0;
+  const idx=G.hintIdx[G.cur]%s.hints.length;
+  document.getElementById('htxt').textContent=s.hints[idx];
+  document.getElementById('hbox').style.display='block';
+  G.hintIdx[G.cur]++;G.hints++;G.score=Math.max(0,G.score-20);refreshHead();
+}
+
+// ─── GPS ─────────────────────────────────────────────────
+function doGPS(){
+  const btn=document.getElementById('gps-btn'),st=document.getElementById('gst');
+  btn.textContent='⏳ Zjišťuji polohu…';btn.disabled=true;
+  st.textContent='Čekám na GPS signál – povolte přístup k poloze…';
+  if(!navigator.geolocation){approveGPS(null);return;}
+  navigator.geolocation.getCurrentPosition(
+    pos=>{
+      const d=haversine(pos.coords.latitude,pos.coords.longitude,ST[6].gpsTarget.lat,ST[6].gpsTarget.lng);
+      if(d<=ST[6].gpsTarget.r){approveGPS(d);}
+      else{st.style.color='var(--bad)';st.textContent=`Jsi ${Math.round(d)}m od terasy – přibliž se!`;btn.textContent='📡 Zkusit znovu';btn.disabled=false;}
+    },
+    ()=>approveGPS(null),
+    {timeout:12000,enableHighAccuracy:true}
+  );
+}
+function approveGPS(dist){
+  G.gpsOk=true;
+  const btn=document.getElementById('gps-btn'),st=document.getElementById('gst');
+  btn.textContent='✅ GPS poloha ověřena!';btn.style.color='var(--acc)';btn.style.borderColor='var(--acc-d)';
+  st.style.color='var(--acc)';
+  st.textContent=dist!=null?`✓ Vzdálenost od terasy: ${Math.round(dist)}m`:'✓ GPS schválena';
+  tryUnlock();
+}
+function haversine(la1,lo1,la2,lo2){
+  const R=6371000,dL=(la2-la1)*Math.PI/180,dl=(lo2-lo1)*Math.PI/180;
+  const a=Math.sin(dL/2)**2+Math.cos(la1*Math.PI/180)*Math.cos(la2*Math.PI/180)*Math.sin(dl/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
+// ─── PHOTO UPLOAD ─────────────────────────────────────────
+// Rule: any file upload = instant success unlock
+function handlePhoto(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    G.photoOk=true;
+    const pv=document.getElementById('photo-prev');
+    pv.src=ev.target.result;pv.style.display='block';
+    const lbl=document.getElementById('photo-lbl');
+    if(lbl){lbl.textContent='✅ Fotka nahrána – mise téměř splněna!';lbl.style.color='var(--acc)';lbl.style.borderColor='var(--acc-d)';}
+    tryUnlock();
+  };
+  r.readAsDataURL(f);
+}
+function tryUnlock(){
+  // Photo alone is enough; GPS is a bonus
+  if(!G.photoOk)return;
+  const btn=document.getElementById('fin-btn');
+  if(btn)btn.disabled=false;
+}
+function finishGame(){
+  if(!G.photoOk){banner('📸 Nejdřív nahraj foto z terasy!','err');return;}
+  G.score+=ST[6].pts;G.cur=ST.length;endGame();
+}
+
+// ─── FLOW ────────────────────────────────────────────────
+function startGame(){
+  const n=document.getElementById('team-name').value.trim();
+  clearInterval(G.timerRef);
+  G={team:n||'TÝM BOTANIKA',cur:0,score:700,hints:0,timerRef:null,startMs:0,elapsed:0,photoOk:false,gpsOk:false,hintIdx:[]};
+  show('s-game');hide('s-intro');hide('s-win');
+  refreshHead();refreshDots();render();startTimer();
+  window.scrollTo({top:0});
+}
+function endGame(){
+  clearInterval(G.timerRef);hide('s-game');
+  const ws=document.getElementById('s-win');
+  ws.style.display='flex';ws.style.flexDirection='column';ws.style.alignItems='center';ws.style.justifyContent='center';
+  document.getElementById('v-score').textContent=Math.max(0,G.score);
+  document.getElementById('v-time').textContent=elapsedStr();
+  document.getElementById('v-hints').textContent=G.hints;
+  document.getElementById('v-learn').innerHTML=LEARNINGS.map(l=>`<div>${l}</div>`).join('');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+function resetGame(){clearInterval(G.timerRef);show('s-intro');hide('s-game');hide('s-win');}
+function show(id){document.getElementById(id).style.display='flex';}
+function hide(id){document.getElementById(id).style.display='none';}
+
+// ─── PWA SERVICE WORKER ───────────────────────────────────
+if('serviceWorker'in navigator){
+  const sw=`const C='escape-lib-v3';
+self.addEventListener('install',e=>e.waitUntil(caches.open(C).then(c=>c.addAll(['.']))));
+self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));`;
+  const blob=new Blob([sw],{type:'application/javascript'});
+  navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(()=>{});
+}
+</script>
+</body>
+</html>
