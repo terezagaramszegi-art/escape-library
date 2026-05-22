@@ -91,35 +91,17 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
 <div style="width:100%;max-width:440px;">
 
   <div style="text-align:center;margin-bottom:2rem;">
-    <div style="font-size:2.8rem;margin-bottom:.5rem;">🌿</div>
-    <h1 style="font-size:1.25rem;font-weight:700;color:var(--acc);letter-spacing:.14em;">ESCAPE LIBRARY</h1>
-    <p class="label" style="margin-top:.35rem;">KNIHOVNA ČZU &nbsp;·&nbsp; ZÁCHRANNÁ MISE</p>
+    <div style="font-size:2.8rem;margin-bottom:.75rem;">🌿</div>
+    <h1 style="font-size:1.4rem;font-weight:700;color:var(--acc);letter-spacing:.14em;">ESCAPE LIBRARY</h1>
   </div>
 
-  <div class="card" style="margin-bottom:1rem;">
-    <p class="label" style="margin-bottom:.6rem;">ÚVOD DO PŘÍBĚHU</p>
-    <p class="v-quote">"Nedali mi to... Nechápou moji genialitu! Do hodiny pocítí celá univerzita můj hněv. Pokud chcete přežít, musíte myslet jako včely – pilně a přesně. Hledejte tam, kde se pravda odděluje od mýtů."</p>
-    <p class="small" style="margin-top:.6rem;">— neúspěšný magistrant, pachatel pylového útoku</p>
+  <div class="card" style="margin-bottom:1.5rem;text-align:center;">
+    <p style="font-size:.9rem;line-height:1.75;color:var(--txt);">Vítej v únikovce pro studenty ČZU, pojď objevit svět Knihovny ČZU a vše co ti může nabídnout.</p>
   </div>
 
-  <div class="card" style="margin-bottom:1.25rem;">
-    <p class="label" style="margin-bottom:.65rem;">PRAVIDLA HRY</p>
-    <div class="small" style="color:var(--txt);line-height:2.3;">
-      <div>⏱ Časový limit: <strong style="color:var(--acc);">60 minut</strong></div>
-      <div>👥 Tým: <strong>2–6 hráčů</strong></div>
-      <div>💡 Nápověda: <strong style="color:var(--wrn);">−20 bodů</strong> za každé použití</div>
-      <div>✗ Špatná odpověď: <strong style="color:var(--bad);">−10 bodů</strong></div>
-      <div>🏁 Celkem: <strong style="color:var(--acc);">7 stanovišť</strong></div>
-    </div>
+  <div style="margin-bottom:1rem;">
+    <input class="field" id="team-name" placeholder="Zadej název týmu…" maxlength="30" style="text-align:center;font-size:1rem;">
   </div>
-
-  <div style="margin-bottom:1.1rem;">
-    <label class="label" style="display:block;margin-bottom:.4rem;">NÁZEV TÝMU</label>
-    <input class="field" id="team-name" placeholder="zadej název týmu…" maxlength="30" style="text-align:center;">
-  </div>
-
-  <button class="btn btn-go pulse" onclick="startGame()">▶&nbsp;&nbsp;SPUSTIT MISI</button>
-  <p class="small" style="text-align:center;margin-top:.85rem;">Naskenujte QR kód u Výpůjčního pultu a poslouchejte nahrávku pachatele.</p>
 
 </div>
 </div>
@@ -173,7 +155,7 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-bottom:1rem;">
     <div class="inset" style="text-align:center;"><div class="label" style="margin-bottom:.2rem;">SKÓRE</div><div id="v-score" style="font-size:1.35rem;font-weight:700;color:var(--wrn);">—</div></div>
     <div class="inset" style="text-align:center;"><div class="label" style="margin-bottom:.2rem;">ČAS</div><div id="v-time" style="font-size:1.35rem;font-weight:700;color:var(--acc);">—</div></div>
-    <div class="inset" style="text-align:center;"><div class="label" style="margin-bottom:.2rem;">NÁPOVĚDY</div><div id="v-hints" style="font-size:1.35rem;font-weight:700;color:var(--bad);">—</div></div>
+    <div class="inset" style="text-align:center;"><div class="label" style="margin-bottom:.2rem;">PENALIZACE</div><div id="v-hints" style="font-size:1.35rem;font-weight:700;color:var(--bad);">—</div></div>
   </div>
 
   <div class="card" style="margin-bottom:1rem;text-align:left;">
@@ -204,21 +186,22 @@ function norm(raw) {
 
 // ─── STATION DATA ─────────────────────────────────────────
 // ⚠️  Replace YOUTUBE_URL_HERE with the actual YouTube link
-const YT_URL = 'https://youtu.be/xNC5-X_Arm4';
+const YT_URL = 'https://www.youtube.com/watch?v=xNC5-X_Arm4';
 
 const ST = [
   {
     id:1, name:'Výpůjční pult', pts:100,
     loc:'📍 Vstupní hala – Výpůjční pult / Loan desk',
     yt: true,
+    minimal: true,
     villain:'"Nedali mi to... Nechápou moji genialitu! Do hodiny pocítí celá univerzita můj hněv. Pokud chcete přežít, musíte myslet jako včely – pilně a přesně. Hledejte tam, kde se pravda odděluje od mýtů."',
-    story:'Naskenuj QR kód a poslechni nahrávku pachatele.<br><br>Poté otevři <strong>online katalog Aleph</strong> (web knihovny) a vyhledej knihu:<br><div class="inset" style="margin:.65rem 0;text-align:center;font-size:.92rem;color:var(--acc);">Včelí produkty mýtů zbavené</div>Zjisti její <strong>signaturu</strong> a zadej ji níže (mezery nevadí).',
-    task:'Jaká je signatura knihy v katalogu Aleph?',
+    story:'',
+    task:'Zde je místo pro kód.',
     ph:'signatura (Z 00000/0)',
-    ans:['z22611/1'],
+    ans:['z22611','z 22611'],
     next:'Skvěle! O geneticky modifikovaných rostlinách psal ten šílenec v časopise Včelařství 2010. Utíkejte do Čítárny!',
     hints:[
-      '💡 Otevři lib.czu.cz → Katalog knih (Aleph) → do pole Název zadej: Včelí produkty mýtů zbavené',
+      '💡 Otevři online katalog Aleph na lib.czu.cz → Katalog knih → do pole Název zadej název knihy z videa',
       '💡 Signatura je kód knihy ve formátu: písmeno(a) + čísla + lomítko + číslo  (příklad: X 12345/6)',
       '💡 Signatura začíná písmenem Z a obsahuje číslo 22611'
     ]
@@ -226,93 +209,126 @@ const ST = [
   {
     id:2, name:'Čítárna', pts:100,
     loc:'📍 2. patro – Čítárna (místnost 231b)',
-    villain:'"Myslíte si, že přečtením starých časopisů mě zastavíte? Ty znalosti jsou zastaralé – stejně jako celý váš systém! Ale hledejte dál… pokud odvahu máte."',
-    story:'Jdi do <strong>Čítárny</strong> (2. patro, m. 231b). V sekci tištěných periodik najdi <strong>laminovanou herní kartu</strong> přilepenou u regálu Včelařství.<br><br>Karta tě navede na článek:<div class="inset" style="margin:.65rem 0;line-height:1.85;font-size:.8rem;"><span class="label">ČASOPIS</span><br><strong style="color:var(--txt);">Včelařství</strong> – ročník 2010, č. 3<br><span class="label" style="margin-top:.35rem;display:block;">ČLÁNEK</span>Geneticky modifikované rostliny: riziko, nebo naděje pro naše včelstva?</div>Na jaké <strong>stránce článek začíná</strong>?',
-    task:'Zadej číslo stránky, kde článek v časopisu začíná.',
+    villain:'',
+    story:'Skvěle.<br><br>O geneticky modifikovaných rostlinách se psalo již v roce 2010/3 v časopise Včelařství. Jenže už nevím, na jaké stránce to bylo...!',
+    task:'Vlož',
     ph:'číslo stránky',
     ans:['82'],
     next:'Máte to! Ale zahořklý student se pokusil smazat digitální stopu protilátky. Rychle do Počítačové studovny – musíme ty kusy poslepovat dohromady!',
     hints:[
-      '💡 Hledej laminovanou herní kartu přímo na regálu nebo polici sekce Včelařství',
-      '💡 Karta přesně říká, na jakou stranu se podívat – číslo je na kartě napsané',
-      '💡 Číslo stránky je dvojciferné, pohybuje se v rozmezí 80–90'
+      '💡 Jdi do Čítárny – 2. patro, místnost 231b, sekce tištěných periodik',
+      '💡 Na regálu u Včelařství najdi laminovanou herní kartu – ta tě navede na správný článek a stranu',
+      '💡 Hledáš dvojciferné číslo stránky v rozmezí 80–90'
     ]
   },
   {
     id:3, name:'Počítačová studovna', pts:100,
     loc:'📍 Přízemí – Počítačová studovna (místnost 140)',
     villain:'"Myslíte, že databáze jsou vaši přátelé? Jsou to jen labyrinty, ve kterých zabloudíte. Jen opravdový génius umí z chaosu vytáhnout pravdu."',
-    story:'Přihlas se na <strong>Web of Science</strong> (přes web knihovny) a vyhledej článek. Z pachatelových šifrovaných zápisků zbyl jen tento útržek:<div class="inset" style="margin:.65rem 0;text-align:center;font-size:.95rem;letter-spacing:.05em;color:var(--acc);line-height:1.7;">H _ _ _ Y &nbsp;as a&nbsp; N _ _ _ _ _ L<br>A N T I _ _ _ _ _ B _ _ L</div><div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:.4rem;margin:.6rem 0;"><div class="inset" style="text-align:center;font-size:.68rem;line-height:1.6;"><strong style="color:var(--acc);">1. slovo</strong><br>co vyrábějí<br>včely</div><div class="inset" style="text-align:center;font-size:.68rem;line-height:1.6;"><strong style="color:var(--acc);">2. slovo</strong><br>opak<br>umělého</div><div class="inset" style="text-align:center;font-size:.68rem;line-height:1.6;"><strong style="color:var(--acc);">3. slovo</strong><br>působí proti<br>mikroorganismům</div></div>Najdi článek a zadej jeho <strong>DOI</strong> (s nebo bez předpony "DOI:").',
-    task:'Zadej DOI nalezeného článku.',
+    story:'Ale copak si můžu pro ten článek chodit do knihovny v noci?<br><br>Prý jsou články dostupné 24/7 a ty nejkvalitnější najdu v jakémsi Web of Science... stačí znát název nebo DOI.<div class="inset" style="margin:.75rem 0;text-align:center;font-size:1rem;letter-spacing:.06em;color:var(--acc);line-height:1.8;">H _ _ _ Y &nbsp;as a&nbsp; N _ _ _ _ _ L<br>A N T I _ _ _ _ _ B _ _ L</div>',
+    task:'Zde je místo pro kód.',
     ph:'DOI článku  (10.xxxx/…)',
-    ans:['10.3390/antibiotics14030255'],
+    ans:['10.4103/0974-777x.96770','10.4103/0974-777X.96770'],
     next:'Jednoznačný identifikátor nalezen! Biologická data k protilátce ale nebyla správně zálohována. Poslední fragment se skrývá v Tiché studovně – potichu našlapuj a neruš!',
     hints:[
-      '💡 Celý název hledaného článku: „Honey as a Natural Antimicrobial" – zadej ho do Web of Science',
-      '💡 DOI začíná vždy číslem 10, poté tečka a číslo vydavatele. Lze zadat i jako „DOI: 10.xxxx/…"',
-      '💡 Článek je z časopisu Antibiotics, rok 2025, svazek 14, číslo 3'
+      '💡 Jdi do Počítačové studovny – přízemí, místnost 140. Přihlas se na Web of Science přes web knihovny',
+      '💡 1. slovo = co vyrábějí včely · 2. slovo = opak umělého · 3. slovo = působí proti mikroorganismům',
+      '💡 DOI začíná číslem 10 – lze zadat i s předponou „DOI:" i bez ní. Článek je z časopisu Antibiotics, 2025'
     ]
   },
   {
     id:4, name:'Velká studovna (Tichá zóna)', pts:100,
     loc:'📍 Přízemí – Velká studovna, Tichá zóna',
     villain:'"V tichu studovny se skrývá pravda, která by mě mohla zastavit. Ale vy ji nikdy nenajdete – vám věda mluví jiným jazykem!"',
-    story:'Jdi do <strong>Velké studovny</strong>, do Tiché zóny. Najdi <strong>QR kód na boku regálu</strong> a dešifruj básničku:',
+    story:'',
     poem:'v tichu studovny odpověď se skrývá,\nne každé BIO logické bývá.\nrozpleť ta slova, co na regále tichém spí,\nObecná genetika směr napoví\na správná skupina své jméno odhalí.',
-    story2:'Najdi regál s oblastí <strong>Obecná genetika</strong> a zapiš <strong>označení skupiny</strong> (název regálu).',
-    task:'Jaký je název skupiny (označení) na regále? (Formát: XXX 000)',
+    story2:'',
+    task:'Zde je místo pro kód.',
     ph:'označení skupiny (BIO 000)',
     ans:['bio575','bio 575'],
     next:'Skvělé, regál jste našli! Protilátka je ale zatím jen shluk informací. Musíte data sdílet podle pravidel Open Science. Utíkejte za experty do CKSD!',
     hints:[
-      '💡 Klíčové slovo básně je „BIO" – hledej sekci BIO ve Velké studovně, Tichá zóna',
-      '💡 Označení skupiny začíná zkratkou BIO a za ní jsou čísla (jako signatura)',
-      '💡 Číslo skupiny je 575 – hledej regál BIO 575 v oblasti Obecná genetika'
+      '💡 Jdi do Velké studovny – přízemí, Tichá zóna (volný výběr knih). Klíčové slovo básně je BIO',
+      '💡 Hledáš označení regálu v oblasti Obecná genetika – formát: zkratka + číslo (např. BIO 000)',
+      '💡 Číslo skupiny je 575 – hledej regál označený BIO 575'
     ]
   },
   {
     id:5, name:'Centrum Open Science (CKSD)', pts:100,
     loc:'📍 Chodba u CKSD – kancelář 221c',
-    villain:'"Open Science? Sdílení dat? Jen hezká slova pro naivní! Skutečná věda si svá tajemství střeží. Nebo ne?"',
-    story:'Navštiv <strong>Centrum kompetencí pro správu dat</strong> nebo jeho webové stránky:<div style="margin:.55rem 0;"><a href="https://lib.czu.cz/cs/r-16393-open-science/r-16854-sprava-dat" target="_blank" rel="noopener" style="color:var(--acc);font-size:.75rem;word-break:break-all;">lib.czu.cz → Open Science → Správa dat</a></div>Aby laboratoře po celém světě mohly okamžitě replikovat protilátku, musíte data sdílet podle <strong>4 principů</strong>. Klikni na každý pilíř níže a zjisti jeho název:',
-    fair:true,
-    task:'Jaký 4písmenný akronym tvoří tyto 4 principy výzkumných dat?',
+    villain:'',
+    story:`Aby mohly laboratoře po celém světě okamžitě replikovat protilátku, data musí splňovat 4 principy.<div style="font-family:'Space Mono',monospace;font-size:.95rem;line-height:2.6;letter-spacing:.05em;text-align:left;margin-top:1rem;">
+      <div><span style="color:var(--acc);font-weight:700;">[ ]</span> i n d a b l e</div>
+      <div><span style="color:var(--acc);font-weight:700;">[ ]</span> c c e s s i b l e</div>
+      <div><span style="color:var(--acc);font-weight:700;">[ ]</span> n t e r o p e r a b l e</div>
+      <div><span style="color:var(--acc);font-weight:700;">[ ]</span> e u s a b l e</div>
+    </div>`,
+    task:'Vlož',
     ph:'čtyřpísmenný akronym',
     ans:['fair'],
     next:'Záchranná data jsou FAIR a letí do světa! Teď potřebuješ znát svého osobního průvodce studiem. Najdeš ji v kanceláři č. 209!',
     hints:[
-      '💡 Klikni postupně na všechny 4 pilíře – každý odhalí jedno slovo začínající jiným písmenem',
-      '💡 Hledáš akronym složený z počátečních písmen 4 anglických slov',
-      '💡 Pořadí: F (dohledatelnost) · A (přístupnost) · I (interoperabilita) · R (opětovná použitelnost)'
+      '💡 Navštiv CKSD – kancelář 221c nebo web: lib.czu.cz → Open Science → Správa dat',
+      '💡 Každý řádek začíná písmenem v hranatých závorkách – seřaď je za sebou',
+      '💡 Pořadí: F · A · I · R'
     ]
   },
   {
     id:6, name:'Kancelář 209', pts:100,
     loc:'📍 2. patro – kancelář č. 209',
-    villain:'"Individuální konzultace? Jen plýtvání časem! Já jsem vše věděl sám lépe – a kde jsem skončil? Ha!"',
-    story:'Jdi do <strong>2. patra</strong>, kancelář <strong>č. 209</strong> – Oddělení informační podpory a vzdělávání.<div class="inset" style="margin:.65rem 0;font-size:.78rem;line-height:1.9;">Psaní závěrečné práce nebo boj s citacemi nemusí být noční můra. Knihovna ČZU nabízí <strong>semináře, webináře i individuální konzultace</strong>, díky kterým bude tvé studium kvalitní a bezproblémové.<br><br>Jaký je <strong>oficiální e-mail</strong>, na který si lze bezplatně objednat individuální pomoc?</div>E-mail najdeš na vizitce u dveří č. 209 nebo na webu knihovny.',
-    task:'Zadej e-mailovou adresu pro objednání konzultace v Knihovně ČZU.',
-    ph:'xxx@lib.czu.cz',
-    ans:['konzultace@lib.czu.cz'],
+    villain:'',
+    story:`Když si nevíš rady s citacemi, zeptej se:<div style="margin-top:.9rem;display:flex;flex-direction:column;gap:.5rem;">
+      <div class="inset" style="font-size:.85rem;">🅐&nbsp; maminka@xyz.cz</div>
+      <div class="inset" style="font-size:.85rem;">🅑&nbsp; Chat GPT</div>
+      <div class="inset" style="font-size:.85rem;border-color:var(--acc-d);">🅒&nbsp; konzultace@lib.czu.cz</div>
+      <div class="inset" style="font-size:.85rem;">🅓&nbsp; medvídka Mývala</div>
+    </div>`,
+    task:'Vlož',
+    ph:'správná odpověď (A / B / C / D nebo e-mail)',
+    ans:['c','konzultace@lib.czu.cz','konzultace@libczucz','c.konzultace@lib.czu.cz'],
     next:'Přesně tak – jsme tu pro vás! Antidotum je vypuštěno, ČZU zachráněna. Jděte se nadechnout na terasu a potvrďte úspěch mise!',
     hints:[
-      '💡 E-mail je fyzicky napsán na vizitce nebo cedulce přímo u dveří kanceláře 209, 2. patro',
-      '💡 Formát: slovo@lib.czu.cz – doména serveru je lib.czu.cz',
-      '💡 První část e-mailu (před @) je české podstatné jméno pro domluvu se specialistou'
+      '💡 Jdi do 2. patra – kancelář č. 209, Oddělení informační podpory a vzdělávání',
+      '💡 Správná odpověď je písmeno nebo e-mailová adresa z možností',
+      '💡 Knihovna ČZU nabízí bezplatné konzultace – zeptej se jich!'
     ]
   },
   {
     id:7, name:'Terasa – Finále!', pts:100,
     loc:'📍 Venkovní terasa Knihovny ČZU',
-    villain:'"Neexistuje možnost, aby někdo objevil protilátku. Ale hraju fér. Pokud ji vystříkáte z terasy v časovém limitu, uznám svou porážku a přihlásím se do knihovny."',
-    story:'🏁 <strong>FINÁLNÍ STANOVIŠTĚ!</strong><br><br>Vyjdi na <strong>venkovní terasu</strong> Knihovny ČZU (přes 2. patro).<br><br>1. Nech aplikaci ověřit tvou <strong>GPS polohu</strong>.<br>2. Vyfoť pohled z terasy <strong>směrem na Pražský hrad</strong>.<br>3. Nahraj fotku jako důkaz splnění mise.<br>4. Stiskni tlačítko vítězství! 🌿',
+    villain:'',
+    story:`<div style="text-align:center;margin-bottom:1rem;">
+      <svg viewBox="0 0 120 180" width="100" height="150" xmlns="http://www.w3.org/2000/svg">
+        <!-- bottle body -->
+        <rect x="35" y="70" width="55" height="90" rx="10" fill="#15803d"/>
+        <!-- bottle neck -->
+        <rect x="48" y="45" width="28" height="28" rx="5" fill="#166534"/>
+        <!-- pump top -->
+        <rect x="52" y="30" width="20" height="12" rx="4" fill="#4ade80"/>
+        <!-- nozzle -->
+        <rect x="70" y="34" width="22" height="6" rx="3" fill="#4ade80"/>
+        <!-- spray dots -->
+        <circle cx="97" cy="28" r="2.5" fill="#86efac" opacity=".8"/>
+        <circle cx="103" cy="24" r="2" fill="#86efac" opacity=".6"/>
+        <circle cx="100" cy="20" r="1.5" fill="#86efac" opacity=".4"/>
+        <circle cx="107" cy="30" r="1.5" fill="#86efac" opacity=".5"/>
+        <circle cx="105" cy="17" r="1" fill="#86efac" opacity=".3"/>
+        <!-- label -->
+        <rect x="42" y="95" width="40" height="45" rx="4" fill="#dcfce7" opacity=".15"/>
+        <text x="62" y="115" text-anchor="middle" font-size="7" fill="#4ade80" font-family="monospace" font-weight="bold">PROTI</text>
+        <text x="62" y="126" text-anchor="middle" font-size="7" fill="#4ade80" font-family="monospace" font-weight="bold">LÁTKA</text>
+        <!-- shine -->
+        <rect x="42" y="78" width="8" height="40" rx="4" fill="white" opacity=".1"/>
+      </svg>
+    </div>
+    <p style="font-size:.9rem;line-height:1.8;color:var(--txt);text-align:center;">Stalo se nemožné! Našel/la sis protilátku, zbývá už jediné –<br>najít správné místo v knihovně, ze kterého je vidět <strong style="color:var(--acc);">Pražský hrad</strong>, a zdokumentovat Tvůj úspěch.</p>`,
     gps:true,
-    gpsTarget:{ lat:50.1344, lng:14.3731, r:250 },
-    task:'Ověř GPS polohu a nahraj foto z terasy jako důkaz.',
+    gpsTarget:{ lat:50.1285997, lng:14.3731636, r:10 },
+    task:'Nahraj foto jako důkaz splnění mise.',
     hints:[
       '💡 Na terasu se dostaneš přes 2. patro budovy – zeptej se obsluhy, pokud si nejsi jistý/á',
       '💡 GPS může trvat několik sekund – povolte přístup k poloze a počkejte na ověření',
-      '💡 Jakákoliv fotka vložená do aplikace se počítá – hlavně že jste na terase!'
+      '💡 Jakákoliv fotka vložená do aplikace se počítá – hlavně že jste na správném místě!'
     ]
   }
 ];
@@ -328,7 +344,7 @@ const LEARNINGS = [
 ];
 
 // ─── STATE ────────────────────────────────────────────────
-let G = { team:'',cur:0,score:700,hints:0,timerRef:null,startMs:0,elapsed:0,photoOk:false,gpsOk:false,hintIdx:[] };
+let G = { team:'',cur:0,score:700,hints:0,hintPenalty:0,timerRef:null,startMs:0,elapsed:0,photoOk:false,gpsOk:false,hintIdx:[] };
 
 // ─── TIMER ───────────────────────────────────────────────
 function startTimer(){
@@ -376,28 +392,33 @@ function render(){
   const box=document.getElementById('station');
   box.className='slide';void box.offsetWidth;
 
-  box.innerHTML=`
-    <div class="card" style="margin-bottom:.85rem;">
-      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:.75rem;">
-        <div>
-          <div class="label" style="margin-bottom:.15rem;">${s.loc}</div>
-          <h2 style="font-size:.95rem;font-weight:700;color:var(--acc);">${s.name}</h2>
-        </div>
-        <div style="font-size:.62rem;background:var(--sur2);border:1px solid var(--bor);border-radius:6px;padding:.2rem .55rem;color:var(--txt-m);white-space:nowrap;">${G.cur+1}&thinsp;/&thinsp;${ST.length}</div>
+  // Station 1 minimal mode: only video button + input field visible
+  // All instructions hidden behind hint
+  if(s.minimal){
+    box.innerHTML=`
+      <div class="card" style="margin-bottom:.85rem;text-align:center;">
+        ${ytBtn()}
       </div>
-      ${s.yt&&YT_URL!=='YOUTUBE_URL_HERE'?ytBtn():''}
-      <div class="inset" style="margin-bottom:.8rem;"><p class="v-quote">${s.villain}</p></div>
-      <div class="small" style="color:var(--txt);line-height:1.9;">${s.story}</div>
-      ${s.poem?poemBlock(s.poem):''}
-      ${s.story2?`<div class="small" style="color:var(--txt);line-height:1.9;margin-top:.65rem;">${s.story2}</div>`:''}
-      ${s.fair?fairBlock():''}
-    </div>
+      <div class="card" style="margin-bottom:.75rem;">
+        <p class="small" style="color:var(--txt);margin-bottom:.9rem;">Vlož</p>
+        ${inputBlock(s)}
+      </div>
+      <button class="btn btn-ghost" onclick="useHint()" style="font-size:.72rem;margin-bottom:.4rem;">💡 Nápověda &nbsp;(+10 minut k času)</button>
+      <div id="hbox" style="display:none;" class="inset"><p id="htxt" style="font-size:.78rem;color:var(--wrn);"></p></div>`;
+    const inp=document.getElementById('ans');
+    if(inp)inp.addEventListener('keydown',e=>{if(e.key==='Enter')checkAns();});
+    return;
+  }
+
+  box.innerHTML=`
+    ${s.poem ? `<div class="card" style="margin-bottom:.85rem;">${poemBlock(s.poem)}</div>` : ''}
+    ${s.fair ? `<div class="card" style="margin-bottom:.85rem;">${fairBlock()}</div>` : ''}
+    ${s.story ? `<div class="card" style="margin-bottom:.85rem;"><div class="small" style="color:var(--txt);line-height:1.9;font-size:.9rem;">${s.story}</div></div>` : ''}
     <div class="card" style="margin-bottom:.75rem;">
-      <p class="label" style="margin-bottom:.5rem;">TVŮJ ÚKOL</p>
-      <p class="small" style="color:var(--txt);margin-bottom:.9rem;">${s.task}</p>
+      <p class="small" style="color:var(--txt);margin-bottom:.9rem;">Vlož</p>
       ${s.gps?gpsBlock():inputBlock(s)}
     </div>
-    <button class="btn btn-ghost" onclick="useHint()" style="font-size:.72rem;margin-bottom:.4rem;">💡 Nápověda &nbsp;(−20 bodů)</button>
+    <button class="btn btn-ghost" onclick="useHint()" style="font-size:.72rem;margin-bottom:.4rem;">💡 Nápověda &nbsp;(+10 minut k času)</button>
     <div id="hbox" style="display:none;" class="inset"><p id="htxt" style="font-size:.78rem;color:var(--wrn);"></p></div>`;
 
   if(!s.gps){
@@ -413,7 +434,7 @@ function render(){
 function ytBtn(){
   return `<a href="${YT_URL}" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:.6rem;background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.25);border-radius:8px;padding:.65rem .9rem;margin-bottom:.8rem;text-decoration:none;">
     <span style="font-size:1.2rem;">▶️</span>
-    <div><div style="font-size:.72rem;font-weight:700;color:var(--bad);">PŘEHRÁT NAHRÁVKU PACHATELE</div><div style="font-size:.65rem;color:var(--txt-m);">otevře YouTube</div></div>
+    <div><div style="font-size:.72rem;font-weight:700;color:var(--bad);">HRA ZAČÍNÁ ZDE</div><div style="font-size:.65rem;color:var(--txt-m);">otevře YouTube</div></div>
   </a>`;
 }
 
@@ -456,17 +477,32 @@ function litPillar(i){
 
 function gpsBlock(){
   return `<div style="margin-bottom:.75rem;">
-    <button class="btn btn-ghost" id="gps-btn" onclick="doGPS()" style="margin-bottom:.45rem;font-size:.74rem;">📡 Ověřit GPS polohu (musíš být na terase!)</button>
+    <button class="btn btn-ghost" id="gps-btn" onclick="doGPS()" style="margin-bottom:.45rem;font-size:.74rem;">Zde je místo pro GPS polohu</button>
     <div id="gst" style="font-size:.7rem;color:var(--txt-m);text-align:center;min-height:.9rem;"></div>
   </div>
   <div style="margin-bottom:.75rem;">
     <label for="photo-inp" id="photo-lbl" style="display:block;width:100%;text-align:center;cursor:pointer;padding:.75rem 1rem;font-family:'Space Mono',monospace;font-size:.74rem;font-weight:700;letter-spacing:.06em;background:transparent;color:var(--txt-m);border:1px solid var(--bor);border-radius:8px;transition:border-color .2s,color .2s;">
-      📸 Nahrát foto z terasy (směr Pražský hrad)
+      Vlož svou fotku
     </label>
     <input type="file" id="photo-inp" accept="image/*" capture="environment" style="display:none;">
     <img id="photo-prev" alt="náhled fotky">
   </div>
   <button class="btn btn-go pulse" id="fin-btn" onclick="finishGame()" disabled>🌿&nbsp;&nbsp;VYPUSTIT PROTILÁTKU A VYHRÁT!</button>`;
+}
+
+// ─── REVEAL INPUT (station 1 two-step) ───────────────────
+function revealInput(){
+  const sec = document.getElementById('input-section');
+  if(sec){
+    sec.style.display='block';
+    sec.classList.add('slide');
+    const inp=document.getElementById('ans');
+    if(inp){
+      inp.addEventListener('keydown',e=>{if(e.key==='Enter')checkAns();});
+      setTimeout(()=>inp.focus(),300);
+    }
+    window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
+  }
 }
 
 // ─── CHECK ANSWER ─────────────────────────────────────────
@@ -498,7 +534,10 @@ function useHint(){
   const idx=G.hintIdx[G.cur]%s.hints.length;
   document.getElementById('htxt').textContent=s.hints[idx];
   document.getElementById('hbox').style.display='block';
-  G.hintIdx[G.cur]++;G.hints++;G.score=Math.max(0,G.score-20);refreshHead();
+  G.hintIdx[G.cur]++;G.hints++;
+  G.hintPenalty=(G.hintPenalty||0)+600;
+  banner('⏱ Nápověda použita – k výslednému času přičteno <strong>+10 minut</strong>!','tip',3000);
+  refreshHead();
 }
 
 // ─── GPS ─────────────────────────────────────────────────
@@ -560,19 +599,36 @@ function finishGame(){
 // ─── FLOW ────────────────────────────────────────────────
 function startGame(){
   const n=document.getElementById('team-name').value.trim();
+  if(!n){ 
+    const inp=document.getElementById('team-name');
+    inp.classList.add('shake-it');
+    setTimeout(()=>inp.classList.remove('shake-it'),450);
+    inp.placeholder='Nejdříve zadej název týmu!';
+    return;
+  }
   clearInterval(G.timerRef);
-  G={team:n||'TÝM BOTANIKA',cur:0,score:700,hints:0,timerRef:null,startMs:0,elapsed:0,photoOk:false,gpsOk:false,hintIdx:[]};
+  G={team:n,cur:0,score:700,hints:0,hintPenalty:0,timerRef:null,startMs:0,elapsed:0,photoOk:false,gpsOk:false,hintIdx:[]};
   show('s-game');hide('s-intro');hide('s-win');
   refreshHead();refreshDots();render();startTimer();
   window.scrollTo({top:0});
 }
+
+// Enter on team name triggers start
+document.addEventListener('DOMContentLoaded',()=>{
+  const inp=document.getElementById('team-name');
+  if(inp) inp.addEventListener('keydown',e=>{ if(e.key==='Enter') startGame(); });
+});
 function endGame(){
   clearInterval(G.timerRef);hide('s-game');
   const ws=document.getElementById('s-win');
   ws.style.display='flex';ws.style.flexDirection='column';ws.style.alignItems='center';ws.style.justifyContent='center';
   document.getElementById('v-score').textContent=Math.max(0,G.score);
-  document.getElementById('v-time').textContent=elapsedStr();
-  document.getElementById('v-hints').textContent=G.hints;
+  // Final time = real elapsed + hint penalties (10 min each)
+  const totalSec = G.elapsed + G.hintPenalty;
+  const m=Math.floor(totalSec/60), s=totalSec%60;
+  const penStr = G.hintPenalty>0 ? ` (+${G.hintPenalty/60} min)` : '';
+  document.getElementById('v-time').textContent=f2(m)+':'+f2(s)+penStr;
+  document.getElementById('v-hints').textContent=G.hints>0?G.hints+' × +10 min':G.hints;
   document.getElementById('v-learn').innerHTML=LEARNINGS.map(l=>`<div>${l}</div>`).join('');
   window.scrollTo({top:0,behavior:'smooth'});
 }
