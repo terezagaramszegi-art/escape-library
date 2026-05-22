@@ -179,8 +179,8 @@ body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradie
 function norm(raw) {
   let s = raw.trim().toLowerCase()
     .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
-    .replace(/^doi\s*:\s*/,'')
-    .replace(/\s+/g,'');
+    .replace(/doi[\s\n\r:]+/g,'')  // strip "DOI", "DOI:", "DOI\n" etc.
+    .replace(/\s+/g,'');           // collapse all whitespace
   return s;
 }
 
@@ -228,7 +228,7 @@ const ST = [
     story:'Ale copak si můžu pro ten článek chodit do knihovny v noci?<br><br>Prý jsou články dostupné 24/7 a ty nejkvalitnější najdu v jakémsi Web of Science... stačí znát název nebo DOI.<div class="inset" style="margin:.75rem 0;text-align:center;font-size:1rem;letter-spacing:.06em;color:var(--acc);line-height:1.8;">H _ _ _ Y &nbsp;as a&nbsp; N _ _ _ _ _ L<br>A N T I _ _ _ _ _ B _ _ L</div>',
     task:'Zde je místo pro kód.',
     ph:'DOI článku  (10.xxxx/…)',
-    ans:['10.4103/0974-777x.96770','10.4103/0974-777X.96770'],
+    ans:['10.3390/antibiotics14030255'],
     next:'Jednoznačný identifikátor nalezen! Biologická data k protilátce ale nebyla správně zálohována. Poslední fragment se skrývá v Tiché studovně – potichu našlapuj a neruš!',
     hints:[
       '💡 Jdi do Počítačové studovny – přízemí, místnost 140. Přihlas se na Web of Science přes web knihovny',
