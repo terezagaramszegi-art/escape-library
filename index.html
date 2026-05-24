@@ -3,218 +3,366 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-<meta name="theme-color" content="#050d08">
+<meta name="theme-color" content="#0f172a">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Escape Library">
 <title>Escape Library – Knihovna ČZU</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Lora:ital,wght@0,400;1,400;1,600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
 
 <style>
+/* ── TOKENS ── */
 :root {
-  --bg:   #050d08;
-  --sur:  #0b1810;
-  --sur2: #122018;
-  --bor:  #1b3322;
-  --acc:  #4ade80;
-  --acc-d:#15803d;
-  --acc-g:rgba(74,222,128,0.18);
-  --txt:  #d1fae5;
-  --txt-m:#5e8c6e;
-  --txt-s:#a3c4b0;
-  --bad:  #f87171;
-  --wrn:  #fbbf24;
+  --bg:      #0f172a;
+  --sur:     #1e293b;
+  --sur2:    #273549;
+  --bor:     #334155;
+  --bor2:    #475569;
+  --acc:     #34d399;
+  --acc-d:   #059669;
+  --acc-txt: #064e3b;
+  --txt:     #f1f5f9;
+  --txt-m:   #94a3b8;
+  --txt-s:   #cbd5e1;
+  --bad:     #f87171;
+  --wrn:     #fbbf24;
+  --info:    #60a5fa;
+  --radius:  14px;
+  --radius-s:10px;
 }
-*{box-sizing:border-box;margin:0;padding:0;}
-html,body{height:100%;}
-body{background:var(--bg);color:var(--txt);font-family:'Space Mono',monospace;overflow-x:hidden;}
-body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,rgba(0,0,0,.035) 0,rgba(0,0,0,.035) 1px,transparent 1px,transparent 3px);pointer-events:none;z-index:9999;}
 
-.wrap{max-width:460px;margin:0 auto;padding:0 1rem;}
-.label{font-size:.55rem;letter-spacing:.15em;color:var(--txt-m);}
-.small{font-size:.74rem;line-height:1.75;color:var(--txt-s);}
+/* ── RESET ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  background: var(--bg);
+  color: var(--txt);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+}
 
-.card{background:var(--sur);border:1px solid var(--bor);border-radius:12px;padding:1.2rem 1.25rem;}
-.inset{background:var(--bg);border:1px solid var(--bor);border-radius:8px;padding:.8rem 1rem;}
+/* ── LAYOUT ── */
+.page { min-height: 100vh; min-height: 100dvh; }
+.wrap { max-width: 480px; margin: 0 auto; padding: 0 1rem; }
 
-.btn{display:block;width:100%;font-family:'Space Mono',monospace;font-weight:700;font-size:.76rem;letter-spacing:.07em;border:none;border-radius:8px;padding:.8rem 1rem;cursor:pointer;transition:opacity .15s,transform .1s;}
-.btn:active{transform:scale(.97);}
-.btn:disabled{opacity:.3;cursor:not-allowed;transform:none;}
-.btn-go{background:var(--acc);color:#052e16;}
-.btn-go:hover:not(:disabled){opacity:.85;}
-.btn-ghost{background:transparent;color:var(--txt-m);border:1px solid var(--bor);}
-.btn-ghost:hover:not(:disabled){border-color:var(--acc-d);color:var(--txt);}
+/* ── CARDS ── */
+.card {
+  background: var(--sur);
+  border: 1.5px solid var(--bor);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+.inset {
+  background: var(--bg);
+  border: 1.5px solid var(--bor);
+  border-radius: var(--radius-s);
+  padding: .85rem 1rem;
+}
 
-.field{background:var(--bg);border:1px solid var(--bor);border-radius:8px;color:var(--acc);font-family:'Space Mono',monospace;font-size:1rem;letter-spacing:.05em;padding:.75rem 1rem;width:100%;outline:none;caret-color:var(--acc);transition:border-color .2s;}
-.field:focus{border-color:var(--acc-d);}
-.field::placeholder{color:var(--txt-m);opacity:.4;font-size:.78rem;font-weight:400;}
+/* ── TYPOGRAPHY ── */
+.label  { font-size: .7rem; font-weight: 600; letter-spacing: .12em; color: var(--txt-m); text-transform: uppercase; }
+.body   { font-size: 1rem;  line-height: 1.75; color: var(--txt-s); }
+.serif  { font-family: 'Lora', serif; }
+.cipher { font-family: 'Courier New', monospace; font-size: 1.05rem; letter-spacing: .08em; color: var(--acc); line-height: 2; }
 
-.v-quote{font-family:'Lora',serif;font-style:italic;font-size:.88rem;line-height:1.85;color:#86efac;border-left:2px solid var(--acc-d);padding-left:.9rem;}
-.poem{font-family:'Lora',serif;font-style:italic;font-size:.88rem;line-height:2.1;color:#86efac;text-align:center;}
+/* ── BUTTONS ── */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 54px;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: .02em;
+  border: none;
+  border-radius: var(--radius-s);
+  padding: .85rem 1.25rem;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity .15s, transform .1s;
+  text-decoration: none;
+  gap: .5rem;
+}
+.btn:active { transform: scale(.97); }
+.btn:disabled { opacity: .35; cursor: not-allowed; transform: none; }
 
-.dot{width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.58rem;font-weight:700;border:1.5px solid;flex-shrink:0;transition:all .3s;}
-.done  {background:var(--acc-d);border-color:var(--acc);color:#052e16;}
-.active{background:var(--acc);border-color:var(--acc);color:#052e16;box-shadow:0 0 14px var(--acc-g);}
-.locked{background:transparent;border-color:var(--bor);color:var(--txt-m);}
+.btn-go   { background: var(--acc);   color: var(--acc-txt); }
+.btn-go:not(:disabled):hover { opacity: .9; }
 
-.ok {background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.3);color:var(--acc);border-radius:8px;padding:.65rem 1rem;font-size:.76rem;}
-.err{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);color:var(--bad);border-radius:8px;padding:.65rem 1rem;font-size:.76rem;}
-.tip{background:rgba(251,191,36,.1);border:1px solid rgba(251,191,36,.3);color:var(--wrn);border-radius:8px;padding:.65rem 1rem;font-size:.76rem;}
+.btn-ghost {
+  background: transparent;
+  color: var(--txt-m);
+  border: 1.5px solid var(--bor);
+}
+.btn-ghost:not(:disabled):hover { border-color: var(--bor2); color: var(--txt); }
 
-#pb{height:3px;background:var(--acc);border-radius:2px;transition:width .5s;box-shadow:0 0 8px var(--acc);}
+.btn-video {
+  background: #ef4444;
+  color: #fff;
+  font-size: 1.05rem;
+}
+.btn-video:hover { opacity: .9; }
 
-.pillar{background:var(--bg);border:1px solid var(--bor);border-radius:8px;padding:.7rem .85rem;cursor:pointer;transition:border-color .2s,background .2s;-webkit-tap-highlight-color:transparent;}
-.pillar.lit{background:var(--acc-g);border-color:var(--acc-d);}
-.p-letter{font-size:1.45rem;font-weight:700;color:var(--acc);line-height:1;}
-.p-word{font-size:.78rem;font-weight:700;color:var(--txt);margin:.15rem 0 .1rem;}
-.p-desc{font-size:.68rem;color:var(--txt-s);line-height:1.5;}
+/* ── INPUT ── */
+.field {
+  background: var(--bg);
+  border: 2px solid var(--bor);
+  border-radius: var(--radius-s);
+  color: var(--txt);
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;        /* min 16px prevents iOS zoom */
+  font-weight: 500;
+  padding: .9rem 1rem;
+  width: 100%;
+  outline: none;
+  caret-color: var(--acc);
+  transition: border-color .2s;
+  -webkit-appearance: none;
+}
+.field:focus { border-color: var(--acc-d); }
+.field::placeholder { color: var(--bor2); font-size: 15px; font-weight: 400; }
 
-@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
-@keyframes slide{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-@keyframes pulse{0%,100%{box-shadow:0 0 6px var(--acc-g)}50%{box-shadow:0 0 22px rgba(74,222,128,.4)}}
-.slide{animation:slide .35s ease forwards;}
-.pulse{animation:pulse 2s ease-in-out infinite;}
-.shake-it{animation:shake .4s ease;}
+/* ── POEM ── */
+.poem-block {
+  font-family: 'Lora', serif;
+  font-style: italic;
+  font-size: 1.05rem;
+  line-height: 2.1;
+  color: var(--txt-s);
+  text-align: center;
+  padding: 1rem;
+  border-left: 3px solid var(--acc-d);
+  background: var(--sur2);
+  border-radius: 0 var(--radius-s) var(--radius-s) 0;
+}
 
-#photo-prev{display:none;width:100%;max-height:200px;object-fit:cover;border-radius:8px;border:1px solid var(--acc-d);margin-top:.75rem;}
+/* ── DOTS ── */
+.dot {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .75rem; font-weight: 700;
+  border: 2px solid;
+  flex-shrink: 0;
+  transition: all .3s;
+  touch-action: manipulation;
+}
+.done   { background: var(--acc-d);  border-color: var(--acc);  color: var(--acc-txt); }
+.active { background: var(--acc);    border-color: var(--acc);  color: var(--acc-txt); box-shadow: 0 0 0 4px rgba(52,211,153,.2); }
+.locked { background: transparent;  border-color: var(--bor);  color: var(--txt-m); }
 
-#s-intro{display:flex;}
-#s-game {display:none;}
-#s-win  {display:none;}
+/* ── PROGRESS BAR ── */
+#pb { height: 4px; background: var(--acc); border-radius: 2px; transition: width .5s; }
+
+/* ── BANNERS ── */
+.banner {
+  border-radius: var(--radius-s);
+  padding: .85rem 1rem;
+  font-size: .9rem;
+  font-weight: 500;
+  margin-bottom: .85rem;
+  display: flex;
+  align-items: flex-start;
+  gap: .5rem;
+}
+.ok  { background: rgba(52,211,153,.12); border: 1.5px solid rgba(52,211,153,.35); color: #6ee7b7; }
+.err { background: rgba(248,113,113,.12); border: 1.5px solid rgba(248,113,113,.35); color: var(--bad); }
+.tip { background: rgba(251,191,36,.12);  border: 1.5px solid rgba(251,191,36,.35);  color: var(--wrn); }
+
+/* ── HINT BOX ── */
+.hint-box {
+  background: rgba(251,191,36,.08);
+  border: 1.5px solid rgba(251,191,36,.3);
+  border-radius: var(--radius-s);
+  padding: 1rem;
+  margin-top: .75rem;
+  font-size: .95rem;
+  color: var(--wrn);
+  line-height: 1.65;
+  display: none;
+}
+
+/* ── PHOTO PREVIEW ── */
+#photo-prev {
+  display: none;
+  width: 100%;
+  max-height: 220px;
+  object-fit: cover;
+  border-radius: var(--radius-s);
+  border: 2px solid var(--acc-d);
+  margin-top: .75rem;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+@keyframes shake  { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-7px)} 75%{transform:translateX(7px)} }
+@keyframes pulse  { 0%,100%{box-shadow:0 0 0 0 rgba(52,211,153,.3)} 50%{box-shadow:0 0 0 8px rgba(52,211,153,0)} }
+
+.fade-up  { animation: fadeUp .3s ease forwards; }
+.shake-it { animation: shake .4s ease; }
+.pulse    { animation: pulse 2s ease-in-out infinite; }
+
+/* ── SCREENS ── */
+#s-intro { display: flex; }
+#s-game  { display: none; }
+#s-win   { display: none; }
+
+/* ── SAFE AREA (notch phones) ── */
+@supports (padding: env(safe-area-inset-bottom)) {
+  #s-game  { padding-bottom: calc(2rem + env(safe-area-inset-bottom)); }
+  #s-intro { padding-bottom: calc(1.5rem + env(safe-area-inset-bottom)); }
+  #hdr     { padding-top: calc(.75rem + env(safe-area-inset-top)); }
+}
 </style>
 </head>
 <body>
 
-<!-- ═══════════ INTRO ═══════════ -->
-<div id="s-intro" style="min-height:100vh;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;">
+<!-- ═══════════════ INTRO ═══════════════ -->
+<div id="s-intro" class="page" style="flex-direction:column;align-items:center;justify-content:center;padding:2rem 1rem;">
 <div style="width:100%;max-width:440px;">
 
-  <div style="text-align:center;margin-bottom:2rem;">
-    <div style="font-size:2.8rem;margin-bottom:.75rem;">🌿</div>
-    <h1 style="font-size:1.4rem;font-weight:700;color:var(--acc);letter-spacing:.14em;">ESCAPE LIBRARY</h1>
+  <div style="text-align:center;margin-bottom:2.5rem;">
+    <div style="font-size:3.5rem;margin-bottom:.75rem;">🌿</div>
+    <h1 style="font-size:1.6rem;font-weight:700;color:var(--acc);letter-spacing:.06em;margin-bottom:.5rem;">ESCAPE LIBRARY</h1>
+    <p style="font-size:.85rem;color:var(--txt-m);letter-spacing:.1em;">KNIHOVNA ČZU</p>
   </div>
 
   <div class="card" style="margin-bottom:1.5rem;text-align:center;">
-    <p style="font-size:.9rem;line-height:1.75;color:var(--txt);">Vítej v únikovce pro studenty ČZU, pojď objevit svět Knihovny ČZU a vše co ti může nabídnout.</p>
+    <p style="font-size:1.05rem;line-height:1.8;color:var(--txt);">Vítej v únikovce pro studenty ČZU, pojď objevit svět Knihovny ČZU a vše co ti může nabídnout.</p>
   </div>
 
-  <div style="margin-bottom:1rem;">
-    <input class="field" id="team-name" placeholder="Zadej název týmu…" maxlength="30" style="text-align:center;font-size:1rem;">
+  <div style="margin-bottom:1.25rem;">
+    <label style="display:block;font-size:.85rem;font-weight:600;color:var(--txt-m);margin-bottom:.5rem;">Název týmu</label>
+    <input class="field" id="team-name" placeholder="Zadej název týmu…" maxlength="30" style="text-align:center;font-size:18px;">
   </div>
+
+  <button class="btn btn-go pulse" onclick="startGame()" style="font-size:1.1rem;">▶&nbsp; Spustit misi</button>
 
 </div>
 </div>
 
-<!-- ═══════════ GAME ════════════ -->
-<div id="s-game" style="min-height:100vh;padding-bottom:3rem;">
+<!-- ═══════════════ GAME ════════════════ -->
+<div id="s-game" class="page">
 
-  <div id="hdr" style="background:var(--sur);border-bottom:1px solid var(--bor);padding:.65rem 1rem;position:sticky;top:0;z-index:50;">
-    <div style="max-width:460px;margin:0 auto;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.4rem;">
+  <!-- Header -->
+  <div id="hdr" style="background:var(--sur);border-bottom:1.5px solid var(--bor);padding:.75rem 1rem;position:sticky;top:0;z-index:50;">
+    <div style="max-width:480px;margin:0 auto;">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">
         <div>
-          <div class="label">TÝM</div>
-          <div id="h-team" style="font-size:.82rem;font-weight:700;color:var(--acc);">—</div>
+          <div class="label" style="margin-bottom:.15rem;">Tým</div>
+          <div id="h-team" style="font-size:.95rem;font-weight:700;color:var(--txt);">—</div>
         </div>
         <div style="text-align:center;">
-          <div class="label">ČAS</div>
-          <div id="h-time" style="font-size:1.45rem;font-weight:700;color:var(--acc);font-variant-numeric:tabular-nums;line-height:1.1;">60:00</div>
+          <div class="label" style="margin-bottom:.1rem;">Čas</div>
+          <div id="h-time" style="font-size:2rem;font-weight:700;color:var(--acc);font-variant-numeric:tabular-nums;line-height:1;">60:00</div>
         </div>
         <div style="text-align:right;">
-          <div class="label">SKÓRE</div>
-          <div id="h-score" style="font-size:.82rem;font-weight:700;color:var(--wrn);">700</div>
+          <div class="label" style="margin-bottom:.15rem;">Skóre</div>
+          <div id="h-score" style="font-size:.95rem;font-weight:700;color:var(--wrn);">700</div>
         </div>
       </div>
-      <div style="background:var(--bor);border-radius:2px;height:3px;"><div id="pb" style="width:0%;"></div></div>
+      <div style="background:var(--bor);border-radius:2px;height:4px;"><div id="pb" style="width:0%;"></div></div>
     </div>
   </div>
 
-  <div style="max-width:460px;margin:.85rem auto;padding:0 1rem;">
-    <div id="dots" style="display:flex;gap:5px;justify-content:center;align-items:center;"></div>
+  <!-- Dots -->
+  <div style="max-width:480px;margin:.85rem auto;padding:0 1rem;">
+    <div id="dots" style="display:flex;gap:6px;justify-content:center;align-items:center;flex-wrap:wrap;"></div>
   </div>
 
-  <div class="wrap">
-    <div id="ban" style="margin-bottom:.75rem;"></div>
-    <div id="station" class="slide"></div>
+  <!-- Content -->
+  <div class="wrap" style="padding-bottom:1rem;">
+    <div id="ban"></div>
+    <div id="station" class="fade-up"></div>
   </div>
 
 </div>
 
-<!-- ═══════════ WIN ═════════════ -->
-<div id="s-win" style="min-height:100vh;flex-direction:column;align-items:center;justify-content:center;padding:1.5rem;text-align:center;">
+<!-- ═══════════════ WIN ════════════════ -->
+<div id="s-win" class="page" style="flex-direction:column;align-items:center;justify-content:center;padding:2rem 1rem;text-align:center;">
 <div style="width:100%;max-width:440px;">
 
-  <div style="font-size:3.5rem;margin-bottom:.75rem;">🎉</div>
-  <h2 style="font-size:1.35rem;font-weight:700;color:var(--acc);letter-spacing:.1em;">MISE SPLNĚNA!</h2>
-  <p class="label" style="margin:.4rem 0 1.5rem;">PYLOVÝ ÚTOK ZASTAVEN &nbsp;·&nbsp; ČZU ZACHRÁNĚNA</p>
+  <div style="font-size:4rem;margin-bottom:1rem;">🎉</div>
+  <h2 style="font-size:1.75rem;font-weight:700;color:var(--acc);margin-bottom:.4rem;">Mise splněna!</h2>
+  <p class="label" style="margin-bottom:2rem;">Pylový útok zastaven · ČZU zachráněna</p>
 
-  <div class="card" style="margin-bottom:1rem;text-align:left;">
-    <p class="v-quote">"Uznávám… Mohl jsem pro svou magisterskou práci udělat o něco více. Vaše znalost Knihovny ČZU je působivá. Možná se někdy zaregistruji."</p>
+  <div class="card" style="text-align:left;margin-bottom:1rem;">
+    <p class="serif" style="font-style:italic;font-size:1rem;line-height:1.8;color:var(--txt-s);">"Uznávám… Mohl jsem pro svou magisterskou práci udělat o něco více. Vaše znalost Knihovny ČZU je působivá."</p>
   </div>
 
   <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-bottom:1rem;">
-    <div class="inset" style="text-align:center;"><div class="label" style="margin-bottom:.2rem;">SKÓRE</div><div id="v-score" style="font-size:1.35rem;font-weight:700;color:var(--wrn);">—</div></div>
-    <div class="inset" style="text-align:center;"><div class="label" style="margin-bottom:.2rem;">ČAS</div><div id="v-time" style="font-size:1.35rem;font-weight:700;color:var(--acc);">—</div></div>
-    <div class="inset" style="text-align:center;"><div class="label" style="margin-bottom:.2rem;">PENALIZACE</div><div id="v-hints" style="font-size:1.35rem;font-weight:700;color:var(--bad);">—</div></div>
+    <div class="inset" style="text-align:center;padding:1rem .5rem;">
+      <div class="label" style="margin-bottom:.3rem;">Skóre</div>
+      <div id="v-score" style="font-size:1.5rem;font-weight:700;color:var(--wrn);">—</div>
+    </div>
+    <div class="inset" style="text-align:center;padding:1rem .5rem;">
+      <div class="label" style="margin-bottom:.3rem;">Čas</div>
+      <div id="v-time" style="font-size:1.35rem;font-weight:700;color:var(--acc);">—</div>
+    </div>
+    <div class="inset" style="text-align:center;padding:1rem .5rem;">
+      <div class="label" style="margin-bottom:.3rem;">Nápovědy</div>
+      <div id="v-hints" style="font-size:1.35rem;font-weight:700;color:var(--bad);">—</div>
+    </div>
   </div>
 
-  <div class="card" style="margin-bottom:1rem;text-align:left;">
-    <p class="label" style="margin-bottom:.7rem;">CO JSI SE NAUČIL/A</p>
-    <div id="v-learn" class="small" style="color:var(--txt);line-height:2.4;"></div>
+  <div class="card" style="text-align:left;margin-bottom:1rem;">
+    <p class="label" style="margin-bottom:.75rem;">Co ses naučil/a</p>
+    <div id="v-learn" style="font-size:.95rem;line-height:2.3;color:var(--txt-s);"></div>
   </div>
 
-  <div class="card" style="margin-bottom:1.25rem;background:rgba(74,222,128,.06);border-color:var(--acc-d);">
-    <p class="small" style="text-align:center;color:var(--acc);">🎁 Vyzvedni si odměnu u <strong style="color:var(--acc);">Výpůjčního pultu</strong>!</p>
+  <div class="card" style="margin-bottom:1.5rem;background:rgba(52,211,153,.08);border-color:var(--acc-d);">
+    <p style="font-size:1rem;text-align:center;color:var(--acc);font-weight:600;">🎁 Vyzvedni si odměnu u Výpůjčního pultu!</p>
   </div>
 
-  <button class="btn btn-ghost" onclick="resetGame()">↩&nbsp;&nbsp;HRÁT ZNOVU</button>
+  <button class="btn btn-ghost" onclick="resetGame()">↩&nbsp; Hrát znovu</button>
 
 </div>
 </div>
 
+<!-- ═══════════════ SCRIPT ════════════════ -->
 <script>
-// ─── NORMALIZATION ────────────────────────────────────────
-// Strips diacritics, lowercases, removes all spaces.
-// Also strips "doi:" prefix for station 3.
-function norm(raw) {
-  let s = raw.trim().toLowerCase()
+// ── NORMALIZATION ────────────────────────────────────────
+function norm(raw){
+  return raw.trim().toLowerCase()
     .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
-    .replace(/doi[\s\n\r:]+/g,'')  // strip "DOI", "DOI:", "DOI\n" etc.
-    .replace(/\s+/g,'');           // collapse all whitespace
-  return s;
+    .replace(/doi[\s\n\r:]+/g,'')
+    .replace(/\s+/g,'');
 }
 
-// ─── STATION DATA ─────────────────────────────────────────
-// ⚠️  Replace YOUTUBE_URL_HERE with the actual YouTube link
+// ── YOUTUBE URL ──────────────────────────────────────────
 const YT_URL = 'https://www.youtube.com/watch?v=xNC5-X_Arm4';
 
+// ── STATION DATA ─────────────────────────────────────────
 const ST = [
   {
     id:1, name:'Výpůjční pult', pts:100,
-    loc:'📍 Vstupní hala – Výpůjční pult / Loan desk',
-    yt: true,
-    minimal: true,
-    villain:'"Nedali mi to... Nechápou moji genialitu! Do hodiny pocítí celá univerzita můj hněv. Pokud chcete přežít, musíte myslet jako včely – pilně a přesně. Hledejte tam, kde se pravda odděluje od mýtů."',
+    minimal:true,
     story:'',
-    task:'Zde je místo pro kód.',
-    ph:'signatura (Z 00000/0)',
+    task:'Zadej kód',
+    ph:'signatura',
     ans:['z22611','z 22611'],
     next:'Skvěle! O geneticky modifikovaných rostlinách psal ten šílenec v časopise Včelařství 2010. Utíkejte do Čítárny!',
     hints:[
-      '💡 Otevři online katalog Aleph na lib.czu.cz → Katalog knih → do pole Název zadej název knihy z videa',
-      '💡 Signatura je kód knihy ve formátu: písmeno(a) + čísla + lomítko + číslo  (příklad: X 12345/6)',
+      '💡 Otevři online katalog Aleph na lib.czu.cz → Katalog knih → zadej název knihy z videa',
+      '💡 Signatura je kód knihy: písmeno + čísla (příklad: Z 12345)',
       '💡 Signatura začíná písmenem Z a obsahuje číslo 22611'
     ]
   },
   {
     id:2, name:'Čítárna', pts:100,
-    loc:'📍 2. patro – Čítárna (místnost 231b)',
-    villain:'',
     story:'Skvěle.<br><br>O geneticky modifikovaných rostlinách se psalo již v roce 2010/3 v časopise Včelařství. Jenže už nevím, na jaké stránce to bylo...!',
-    task:'Vlož',
+    task:'Zadej kód',
     ph:'číslo stránky',
     ans:['82'],
-    next:'Máte to! Ale zahořklý student se pokusil smazat digitální stopu protilátky. Rychle do Počítačové studovny – musíme ty kusy poslepovat dohromady!',
+    next:'Máte to! Ale zahořklý student se pokusil smazat digitální stopu protilátky. Rychle do Počítačové studovny!',
     hints:[
       '💡 Jdi do Čítárny – 2. patro, místnost 231b, sekce tištěných periodik',
       '💡 Na regálu u Včelařství najdi laminovanou herní kartu – ta tě navede na správný článek a stranu',
@@ -223,130 +371,88 @@ const ST = [
   },
   {
     id:3, name:'Počítačová studovna', pts:100,
-    loc:'📍 Přízemí – Počítačová studovna (místnost 140)',
-    villain:'"Myslíte, že databáze jsou vaši přátelé? Jsou to jen labyrinty, ve kterých zabloudíte. Jen opravdový génius umí z chaosu vytáhnout pravdu."',
-    story:'Ale copak si můžu pro ten článek chodit do knihovny v noci?<br><br>Prý jsou články dostupné 24/7 a ty nejkvalitnější najdu v jakémsi Web of Science... stačí znát název nebo DOI.<div class="inset" style="margin:.75rem 0;text-align:center;font-size:1rem;letter-spacing:.06em;color:var(--acc);line-height:1.8;">H _ _ _ Y &nbsp;as a&nbsp; N _ _ _ _ _ L<br>A N T I _ _ _ _ _ B _ _ L</div>',
-    task:'Zde je místo pro kód.',
-    ph:'DOI článku  (10.xxxx/…)',
+    story:'Ale copak si můžu pro ten článek chodit do knihovny v noci?<br><br>Prý jsou články dostupné 24/7 a ty nejkvalitnější najdu v jakémsi Web of Science... stačí znát název nebo DOI.',
+    cipher:'H _ _ _ Y &nbsp;as a&nbsp; N _ _ _ _ _ L<br>A N T I _ _ _ _ _ B _ _ L',
+    task:'Zadej kód',
+    ph:'DOI článku (10.xxxx/…)',
     ans:['10.3390/antibiotics14030255'],
-    next:'Jednoznačný identifikátor nalezen! Biologická data k protilátce ale nebyla správně zálohována. Poslední fragment se skrývá v Tiché studovně – potichu našlapuj a neruš!',
+    next:'Jednoznačný identifikátor nalezen! Poslední fragment se skrývá v Tiché studovně – potichu našlapuj!',
     hints:[
       '💡 Jdi do Počítačové studovny – přízemí, místnost 140. Přihlas se na Web of Science přes web knihovny',
       '💡 1. slovo = co vyrábějí včely · 2. slovo = opak umělého · 3. slovo = působí proti mikroorganismům',
-      '💡 DOI začíná číslem 10 – lze zadat i s předponou „DOI:" i bez ní. Článek je z časopisu Antibiotics, 2025'
+      '💡 DOI začíná číslem 10. Artikel je z časopisu Antibiotics, rok 2025'
     ]
   },
   {
-    id:4, name:'Velká studovna (Tichá zóna)', pts:100,
-    loc:'📍 Přízemí – Velká studovna, Tichá zóna',
-    villain:'"V tichu studovny se skrývá pravda, která by mě mohla zastavit. Ale vy ji nikdy nenajdete – vám věda mluví jiným jazykem!"',
-    story:'',
+    id:4, name:'Velká studovna', pts:100,
     poem:'v tichu studovny odpověď se skrývá,\nne každé BIO logické bývá.\nrozpleť ta slova, co na regále tichém spí,\nObecná genetika směr napoví\na správná skupina své jméno odhalí.',
-    story2:'',
-    task:'Zde je místo pro kód.',
+    task:'Zadej kód',
     ph:'označení skupiny (BIO 000)',
     ans:['bio575','bio 575'],
-    next:'Skvělé, regál jste našli! Protilátka je ale zatím jen shluk informací. Musíte data sdílet podle pravidel Open Science. Utíkejte za experty do CKSD!',
+    next:'Skvělé! Musíte data sdílet podle pravidel Open Science. Utíkejte za experty do CKSD!',
     hints:[
-      '💡 Jdi do Velké studovny – přízemí, Tichá zóna (volný výběr knih). Klíčové slovo básně je BIO',
-      '💡 Hledáš označení regálu v oblasti Obecná genetika – formát: zkratka + číslo (např. BIO 000)',
-      '💡 Číslo skupiny je 575 – hledej regál označený BIO 575'
+      '💡 Jdi do Velké studovny – přízemí, Tichá zóna (volný výběr knih)',
+      '💡 Klíčové slovo básně je BIO – hledej regál v oblasti Obecná genetika',
+      '💡 Číslo skupiny je 575 – hledej regál BIO 575'
     ]
   },
   {
-    id:5, name:'Centrum Open Science (CKSD)', pts:100,
-    loc:'📍 Chodba u CKSD – kancelář 221c',
-    villain:'',
-    story:`Aby mohly laboratoře po celém světě okamžitě replikovat protilátku, data musí splňovat 4 principy.<div style="font-family:'Space Mono',monospace;font-size:.95rem;line-height:2.6;letter-spacing:.05em;text-align:left;margin-top:1rem;">
-      <div><span style="color:var(--acc);font-weight:700;">[ ]</span> i n d a b l e</div>
-      <div><span style="color:var(--acc);font-weight:700;">[ ]</span> c c e s s i b l e</div>
-      <div><span style="color:var(--acc);font-weight:700;">[ ]</span> n t e r o p e r a b l e</div>
-      <div><span style="color:var(--acc);font-weight:700;">[ ]</span> e u s a b l e</div>
-    </div>`,
-    task:'Vlož',
-    ph:'čtyřpísmenný akronym',
+    id:5, name:'CKSD – Open Science', pts:100,
+    story:'Aby mohly laboratoře po celém světě okamžitě replikovat protilátku, data musí splňovat 4 principy.',
+    cipher:'[ ] i n d a b l e<br>[ ] c c e s s i b l e<br>[ ] n t e r o p e r a b l e<br>[ ] e u s a b l e',
+    task:'Zadej kód',
+    ph:'4písmenný akronym',
     ans:['fair'],
-    next:'Záchranná data jsou FAIR a letí do světa! Teď potřebuješ znát svého osobního průvodce studiem. Najdeš ji v kanceláři č. 209!',
+    next:'Data jsou FAIR a letí do světa! Najdeš svého průvodce studiem v kanceláři č. 209!',
     hints:[
       '💡 Navštiv CKSD – kancelář 221c nebo web: lib.czu.cz → Open Science → Správa dat',
-      '💡 Každý řádek začíná písmenem v hranatých závorkách – seřaď je za sebou',
+      '💡 Každý řádek začíná prázdnou závorkou [ ] – doplň první písmeno každého slova',
       '💡 Pořadí: F · A · I · R'
     ]
   },
   {
     id:6, name:'Kancelář 209', pts:100,
-    loc:'📍 2. patro – kancelář č. 209',
-    villain:'',
-    story:`Když si nevíš rady s citacemi, zeptej se:<div style="margin-top:.9rem;display:flex;flex-direction:column;gap:.5rem;">
-      <div class="inset" style="font-size:.85rem;">🅐&nbsp; maminka@xyz.cz</div>
-      <div class="inset" style="font-size:.85rem;">🅑&nbsp; Chat GPT</div>
-      <div class="inset" style="font-size:.85rem;border-color:var(--acc-d);">🅒&nbsp; konzultace@lib.czu.cz</div>
-      <div class="inset" style="font-size:.85rem;">🅓&nbsp; medvídka Mývala</div>
-    </div>`,
-    task:'Vlož',
-    ph:'správná odpověď (A / B / C / D nebo e-mail)',
+    story:'Když si nevíš rady s citacemi, zeptej se:',
+    choices:['🅐&nbsp; maminka@xyz.cz','🅑&nbsp; Chat GPT','🅒&nbsp; konzultace@lib.czu.cz','🅓&nbsp; medvídka Mývala'],
+    choiceCorrect: 2,
+    task:'Zadej kód',
+    ph:'A / B / C / D nebo e-mail',
     ans:['c','konzultace@lib.czu.cz'],
-    next:'Přesně tak – jsme tu pro vás! Antidotum je vypuštěno, ČZU zachráněna. Jděte se nadechnout na terasu a potvrďte úspěch mise!',
+    next:'Přesně tak – jsme tu pro vás! Jděte na terasu a potvrďte úspěch mise!',
     hints:[
       '💡 Jdi do 2. patra – kancelář č. 209, Oddělení informační podpory a vzdělávání',
-      '💡 Správná odpověď je písmeno nebo e-mailová adresa z možností',
+      '💡 Správná odpověď je písmeno C nebo celá e-mailová adresa',
       '💡 Knihovna ČZU nabízí bezplatné konzultace – zeptej se jich!'
     ]
   },
   {
     id:7, name:'Terasa – Finále!', pts:100,
-    loc:'📍 Venkovní terasa Knihovny ČZU',
-    villain:'',
-    story:`<div style="text-align:center;margin-bottom:1rem;">
-      <svg viewBox="0 0 120 180" width="100" height="150" xmlns="http://www.w3.org/2000/svg">
-        <!-- bottle body -->
-        <rect x="35" y="70" width="55" height="90" rx="10" fill="#15803d"/>
-        <!-- bottle neck -->
-        <rect x="48" y="45" width="28" height="28" rx="5" fill="#166534"/>
-        <!-- pump top -->
-        <rect x="52" y="30" width="20" height="12" rx="4" fill="#4ade80"/>
-        <!-- nozzle -->
-        <rect x="70" y="34" width="22" height="6" rx="3" fill="#4ade80"/>
-        <!-- spray dots -->
-        <circle cx="97" cy="28" r="2.5" fill="#86efac" opacity=".8"/>
-        <circle cx="103" cy="24" r="2" fill="#86efac" opacity=".6"/>
-        <circle cx="100" cy="20" r="1.5" fill="#86efac" opacity=".4"/>
-        <circle cx="107" cy="30" r="1.5" fill="#86efac" opacity=".5"/>
-        <circle cx="105" cy="17" r="1" fill="#86efac" opacity=".3"/>
-        <!-- label -->
-        <rect x="42" y="95" width="40" height="45" rx="4" fill="#dcfce7" opacity=".15"/>
-        <text x="62" y="115" text-anchor="middle" font-size="7" fill="#4ade80" font-family="monospace" font-weight="bold">PROTI</text>
-        <text x="62" y="126" text-anchor="middle" font-size="7" fill="#4ade80" font-family="monospace" font-weight="bold">LÁTKA</text>
-        <!-- shine -->
-        <rect x="42" y="78" width="8" height="40" rx="4" fill="white" opacity=".1"/>
-      </svg>
-    </div>
-    <p style="font-size:.9rem;line-height:1.8;color:var(--txt);text-align:center;">Stalo se nemožné! Našel/la sis protilátku, zbývá už jediné –<br>najít správné místo v knihovně, ze kterého je vidět <strong style="color:var(--acc);">Pražský hrad</strong>, a zdokumentovat Tvůj úspěch.</p>`,
+    story:'<div style="text-align:center;margin-bottom:1.25rem;"><svg viewBox="0 0 120 180" width="90" height="135" xmlns="http://www.w3.org/2000/svg"><rect x="35" y="70" width="55" height="90" rx="10" fill="#059669"/><rect x="48" y="45" width="28" height="28" rx="5" fill="#065f46"/><rect x="52" y="30" width="20" height="12" rx="4" fill="#34d399"/><rect x="70" y="34" width="22" height="6" rx="3" fill="#34d399"/><circle cx="97" cy="28" r="2.5" fill="#6ee7b7" opacity=".8"/><circle cx="103" cy="23" r="2" fill="#6ee7b7" opacity=".6"/><circle cx="100" cy="19" r="1.5" fill="#6ee7b7" opacity=".4"/><circle cx="107" cy="30" r="1.5" fill="#6ee7b7" opacity=".5"/><rect x="42" y="95" width="40" height="45" rx="4" fill="#d1fae5" opacity=".12"/><text x="62" y="115" text-anchor="middle" font-size="7" fill="#34d399" font-family="monospace" font-weight="bold">PROTI</text><text x="62" y="126" text-anchor="middle" font-size="7" fill="#34d399" font-family="monospace" font-weight="bold">LÁTKA</text><rect x="42" y="78" width="8" height="40" rx="4" fill="white" opacity=".1"/></svg></div><p style="font-size:1rem;line-height:1.8;color:var(--txt);text-align:center;">Stalo se nemožné! Našel/la sis protilátku, zbývá už jediné –<br>najít správné místo v knihovně, ze kterého je vidět <strong style="color:var(--acc);">Pražský hrad</strong>, a zdokumentovat Tvůj úspěch.</p>',
     gps:true,
     gpsTarget:{ lat:50.1285997, lng:14.3731636, r:10 },
     task:'Nahraj foto jako důkaz splnění mise.',
     hints:[
-      '💡 Na terasu se dostaneš přes 2. patro budovy – zeptej se obsluhy, pokud si nejsi jistý/á',
-      '💡 GPS může trvat několik sekund – povolte přístup k poloze a počkejte na ověření',
-      '💡 Jakákoliv fotka vložená do aplikace se počítá – hlavně že jste na správném místě!'
+      '💡 Na terasu se dostaneš přes 2. patro budovy',
+      '💡 GPS může trvat několik sekund – povolte přístup k poloze a počkejte',
+      '💡 Jakákoliv fotka vložená do aplikace se počítá!'
     ]
   }
 ];
 
-const LEARNINGS = [
-  '✅ Vyhledávání knih v online katalogu <strong>Aleph</strong>',
-  '✅ Orientace v <strong>Čítárně</strong> – tištěná periodika',
-  '✅ Práce s mezinárodní databází <strong>Web of Science</strong>',
-  '✅ Hledání knih ve <strong>Velké studovně</strong> podle signatury',
-  '✅ Principy <strong>Open Science</strong> a správy dat (FAIR)',
-  '✅ Využití <strong>konzultačních služeb</strong> Knihovny ČZU',
-  '✅ Fotodůkaz z <strong>terasy</strong> – mise splněna! 📸'
+const LEARNINGS=[
+  '✅ Vyhledávání knih v online katalogu Aleph',
+  '✅ Orientace v Čítárně – tištěná periodika',
+  '✅ Práce s mezinárodní databází Web of Science',
+  '✅ Hledání knih ve Velké studovně podle signatury',
+  '✅ Principy Open Science a správy dat (FAIR)',
+  '✅ Využití konzultačních služeb Knihovny ČZU',
+  '✅ Fotodůkaz z terasy – mise splněna! 📸'
 ];
 
-// ─── STATE ────────────────────────────────────────────────
-let G = { team:'',cur:0,score:700,hints:0,hintPenalty:0,timerRef:null,startMs:0,elapsed:0,photoOk:false,gpsOk:false,hintIdx:[] };
+// ── STATE ────────────────────────────────────────────────
+let G={team:'',cur:0,score:700,hints:0,hintPenalty:0,timerRef:null,startMs:0,elapsed:0,photoOk:false,gpsOk:false,hintIdx:[]};
 
-// ─── TIMER ───────────────────────────────────────────────
+// ── TIMER ────────────────────────────────────────────────
 function startTimer(){
   G.startMs=Date.now();
   G.timerRef=setInterval(()=>{
@@ -359,9 +465,9 @@ function startTimer(){
   },1000);
 }
 function f2(n){return String(n).padStart(2,'0');}
-function elapsedStr(){const m=Math.floor(G.elapsed/60),s=G.elapsed%60;return f2(m)+':'+f2(s);}
+function elStr(){const m=Math.floor(G.elapsed/60),s=G.elapsed%60;return f2(m)+':'+f2(s);}
 
-// ─── HEAD / DOTS ──────────────────────────────────────────
+// ── HEAD / DOTS ──────────────────────────────────────────
 function refreshHead(){
   document.getElementById('h-team').textContent=G.team;
   document.getElementById('h-score').textContent=Math.max(0,G.score);
@@ -372,179 +478,149 @@ function refreshDots(){
   ST.forEach((_,i)=>{
     const d=document.createElement('div');
     d.className='dot '+(i<G.cur?'done':i===G.cur?'active':'locked');
-    d.title=ST[i].name;d.textContent=i<G.cur?'✓':(i+1);
+    d.title=ST[i].name;
+    d.textContent=i<G.cur?'✓':(i+1);
     c.appendChild(d);
   });
 }
 
-// ─── BANNER ──────────────────────────────────────────────
-function banner(msg,cls,ms=3200){
+// ── BANNER ───────────────────────────────────────────────
+function banner(msg,cls,ms=3500){
   const a=document.getElementById('ban');
-  a.innerHTML=`<div class="${cls}" style="margin-bottom:.75rem;">${msg}</div>`;
+  a.innerHTML=`<div class="banner ${cls}">${msg}</div>`;
   if(ms>0)setTimeout(()=>{if(a.firstChild)a.innerHTML='';},ms);
 }
 
-// ─── RENDER ──────────────────────────────────────────────
-let fairLit=[false,false,false,false];
-
+// ── RENDER ───────────────────────────────────────────────
 function render(){
   const s=ST[G.cur];
   const box=document.getElementById('station');
-  box.className='slide';void box.offsetWidth;
+  box.className='fade-up';void box.offsetWidth;
 
-  // Station 1 minimal mode: only video button + input field visible
-  // All instructions hidden behind hint
+  let inner='';
+
+  // Station 1: minimal (video only then input)
   if(s.minimal){
     box.innerHTML=`
-      <div class="card" style="margin-bottom:.85rem;text-align:center;">
-        ${ytBtn()}
+      <div class="card" style="text-align:center;">
+        <a href="${YT_URL}" target="_blank" rel="noopener" class="btn btn-video" style="margin-bottom:1rem;font-size:1.1rem;">
+          ▶&nbsp; HRA ZAČÍNÁ ZDE
+        </a>
+        <p style="font-size:.9rem;color:var(--txt-m);">Přehraj video a zjisti, co hledáš.</p>
       </div>
-      <div class="card" style="margin-bottom:.75rem;">
-        <p class="small" style="color:var(--txt);margin-bottom:.9rem;">Vlož</p>
-        ${inputBlock(s)}
+      <div class="card">
+        <p style="font-size:.95rem;font-weight:600;color:var(--txt);margin-bottom:.75rem;">Zadej kód</p>
+        <input class="field" id="ans" placeholder="${s.ph}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" maxlength="80" style="margin-bottom:.85rem;">
+        <button class="btn btn-go" onclick="checkAns()">Odeslat odpověď</button>
       </div>
-      <button class="btn btn-ghost" onclick="useHint()" style="font-size:.72rem;margin-bottom:.4rem;">💡 Nápověda &nbsp;(+10 minut k času)</button>
-      <div id="hbox" style="display:none;" class="inset"><p id="htxt" style="font-size:.78rem;color:var(--wrn);"></p></div>`;
-    const inp=document.getElementById('ans');
-    if(inp)inp.addEventListener('keydown',e=>{if(e.key==='Enter')checkAns();});
+      <button class="btn btn-ghost" onclick="useHint()" style="margin-top:.25rem;">💡 Nápověda &nbsp;(+10 min k času)</button>
+      <div class="hint-box" id="hbox"><p id="htxt"></p></div>`;
+    document.getElementById('ans').addEventListener('keydown',e=>{if(e.key==='Enter')checkAns();});
     return;
   }
 
-  box.innerHTML=`
-    ${s.poem ? `<div class="card" style="margin-bottom:.85rem;">${poemBlock(s.poem)}</div>` : ''}
-    ${s.fair ? `<div class="card" style="margin-bottom:.85rem;">${fairBlock()}</div>` : ''}
-    ${s.story ? `<div class="card" style="margin-bottom:.85rem;"><div class="small" style="color:var(--txt);line-height:1.9;font-size:.9rem;">${s.story}</div></div>` : ''}
-    <div class="card" style="margin-bottom:.75rem;">
-      <p class="small" style="color:var(--txt);margin-bottom:.9rem;">Vlož</p>
-      ${s.gps?gpsBlock():inputBlock(s)}
-    </div>
-    <button class="btn btn-ghost" onclick="useHint()" style="font-size:.72rem;margin-bottom:.4rem;">💡 Nápověda &nbsp;(+10 minut k času)</button>
-    <div id="hbox" style="display:none;" class="inset"><p id="htxt" style="font-size:.78rem;color:var(--wrn);"></p></div>`;
+  // Story block
+  if(s.story) inner+=`<div class="card"><p class="body">${s.story}</p></div>`;
+
+  // Choices (station 6)
+  if(s.choices){
+    inner+=`<div class="card" style="display:flex;flex-direction:column;gap:.6rem;">`;
+    s.choices.forEach((c,i)=>{
+      const isCorrect = i===s.choiceCorrect;
+      inner+=`<div class="inset" style="font-size:1rem;color:${isCorrect?'var(--txt)':'var(--txt-m)'};${isCorrect?'border-color:var(--acc-d);':''}">${c}</div>`;
+    });
+    inner+=`</div>`;
+  }
+
+  // Cipher block
+  if(s.cipher) inner+=`<div class="card"><div class="cipher">${s.cipher}</div></div>`;
+
+  // Poem block
+  if(s.poem) inner+=`<div class="card"><div class="poem-block">${s.poem.replace(/\n/g,'<br>')}</div></div>`;
+
+  // Input / GPS
+  if(s.gps){
+    inner+=`<div class="card">${gpsBlock()}</div>`;
+  } else {
+    inner+=`
+      <div class="card">
+        <p style="font-size:.95rem;font-weight:600;color:var(--txt);margin-bottom:.75rem;">Zadej kód</p>
+        <input class="field" id="ans" placeholder="${s.ph}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" maxlength="80" style="margin-bottom:.85rem;">
+        <button class="btn btn-go" onclick="checkAns()">Odeslat odpověď</button>
+      </div>`;
+  }
+
+  inner+=`
+    <button class="btn btn-ghost" onclick="useHint()" style="margin-top:.25rem;">💡 Nápověda &nbsp;(+10 min k času)</button>
+    <div class="hint-box" id="hbox"><p id="htxt"></p></div>`;
+
+  box.innerHTML=inner;
 
   if(!s.gps){
     const inp=document.getElementById('ans');
-    if(inp)inp.addEventListener('keydown',e=>{if(e.key==='Enter')checkAns();});
-  }else{
+    if(inp) inp.addEventListener('keydown',e=>{if(e.key==='Enter')checkAns();});
+  } else {
     const pi=document.getElementById('photo-inp');
-    if(pi)pi.addEventListener('change',handlePhoto);
+    if(pi) pi.addEventListener('change',handlePhoto);
   }
-  if(s.fair){fairLit=[false,false,false,false];}
-}
-
-function ytBtn(){
-  return `<a href="${YT_URL}" target="_blank" rel="noopener" style="display:flex;align-items:center;gap:.6rem;background:rgba(248,113,113,.08);border:1px solid rgba(248,113,113,.25);border-radius:8px;padding:.65rem .9rem;margin-bottom:.8rem;text-decoration:none;">
-    <span style="font-size:1.2rem;">▶️</span>
-    <div><div style="font-size:.72rem;font-weight:700;color:var(--bad);">HRA ZAČÍNÁ ZDE</div><div style="font-size:.65rem;color:var(--txt-m);">otevře YouTube</div></div>
-  </a>`;
-}
-
-function inputBlock(s){
-  return `<input class="field" id="ans" placeholder="${s.ph}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" maxlength="80" style="margin-bottom:.75rem;">
-    <button class="btn btn-go" onclick="checkAns()">→&nbsp;&nbsp;ODESLAT ODPOVĚĎ</button>`;
-}
-
-function poemBlock(poem){
-  return `<div style="margin:.75rem 0;padding:.85rem;background:var(--bg);border-radius:8px;border:1px solid var(--bor);"><p class="poem">${poem.replace(/\n/g,'<br>')}</p></div>`;
-}
-
-const FAIR_D=[
-  {l:'F',w:'Findable',     d:'Data jsou snadno dohledatelná pro lidi i stroje pomocí unikátního identifikátoru (DOI).'},
-  {l:'A',w:'Accessible',   d:'K datům existuje jasně definovaný a otevřený protokol přístupu, pokud možno bez registrace.'},
-  {l:'I',w:'Interoperable',d:'Data používají standardizované formáty a slovníky pro integraci s jinými daty.'},
-  {l:'R',w:'Reusable',     d:'Data jsou bohatě popsána metadaty, aby je mohli znovu využít další výzkumníci.'}
-];
-
-function fairBlock(){
-  return `<div style="margin-top:.8rem;">
-    <p class="label" style="margin-bottom:.5rem;">4 PILÍŘE – klikni na každý pilíř</p>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;" id="fg">
-      ${FAIR_D.map((p,i)=>`<div class="pillar" id="pl${i}" onclick="litPillar(${i})">
-        <div class="p-letter">${p.l}</div><div class="p-word">${p.w}</div><div class="p-desc">${p.d}</div>
-      </div>`).join('')}
-    </div>
-    <div id="fst" style="text-align:center;font-size:.72rem;color:var(--txt-m);margin-top:.5rem;">Klikni na všechny 4 pilíře pro odhalení akronymu</div>
-  </div>`;
-}
-
-function litPillar(i){
-  fairLit[i]=true;
-  document.getElementById('pl'+i).classList.add('lit');
-  const all=fairLit.every(Boolean);
-  const st=document.getElementById('fst');
-  if(all){st.textContent='✓ Všechny pilíře aktivovány! Akronym = F · A · I · R';st.style.color='var(--acc)';}
-  else{const r=4-fairLit.filter(Boolean).length;st.textContent=`Zbývají ${r} pilíř/e…`;}
 }
 
 function gpsBlock(){
-  return `<div style="margin-bottom:.75rem;">
-    <button class="btn btn-ghost" id="gps-btn" onclick="doGPS()" style="margin-bottom:.45rem;font-size:.74rem;">Zde je místo pro GPS polohu</button>
-    <div id="gst" style="font-size:.7rem;color:var(--txt-m);text-align:center;min-height:.9rem;"></div>
-  </div>
-  <div style="margin-bottom:.75rem;">
-    <label for="photo-inp" id="photo-lbl" style="display:block;width:100%;text-align:center;cursor:pointer;padding:.75rem 1rem;font-family:'Space Mono',monospace;font-size:.74rem;font-weight:700;letter-spacing:.06em;background:transparent;color:var(--txt-m);border:1px solid var(--bor);border-radius:8px;transition:border-color .2s,color .2s;">
-      Vlož svou fotku
+  return `
+    <p style="font-size:.95rem;font-weight:600;color:var(--txt);margin-bottom:1rem;">${ST[6].task}</p>
+    <button class="btn btn-ghost" id="gps-btn" onclick="doGPS()" style="margin-bottom:.6rem;">
+      📡 Zde je místo pro GPS polohu
+    </button>
+    <div id="gst" style="font-size:.85rem;color:var(--txt-m);text-align:center;min-height:1.2rem;margin-bottom:.75rem;"></div>
+    <label for="photo-inp" id="photo-lbl" class="btn btn-ghost" style="cursor:pointer;">
+      📸 Vlož svou fotku
     </label>
     <input type="file" id="photo-inp" accept="image/*" capture="environment" style="display:none;">
     <img id="photo-prev" alt="náhled fotky">
-  </div>
-  <button class="btn btn-go pulse" id="fin-btn" onclick="finishGame()" disabled>🌿&nbsp;&nbsp;VYPUSTIT PROTILÁTKU A VYHRÁT!</button>`;
+    <button class="btn btn-go pulse" id="fin-btn" onclick="finishGame()" disabled style="margin-top:1rem;">
+      🌿&nbsp; Vypustit protilátku a vyhrát!
+    </button>`;
 }
 
-// ─── REVEAL INPUT (station 1 two-step) ───────────────────
-function revealInput(){
-  const sec = document.getElementById('input-section');
-  if(sec){
-    sec.style.display='block';
-    sec.classList.add('slide');
-    const inp=document.getElementById('ans');
-    if(inp){
-      inp.addEventListener('keydown',e=>{if(e.key==='Enter')checkAns();});
-      setTimeout(()=>inp.focus(),300);
-    }
-    window.scrollTo({top:document.body.scrollHeight,behavior:'smooth'});
-  }
-}
-
-// ─── CHECK ANSWER ─────────────────────────────────────────
+// ── ANSWER CHECK ─────────────────────────────────────────
 function checkAns(){
   const el=document.getElementById('ans');if(!el)return;
   const given=norm(el.value);if(!given){shakeEl(el);return;}
   const s=ST[G.cur];
-  const ok=s.ans.some(a=>norm(a)===given);
-  if(ok){
+  if(s.ans.some(a=>norm(a)===given)){
     G.score+=s.pts;G.cur++;
     refreshHead();refreshDots();
     if(G.cur>=ST.length){endGame();return;}
     render();
-    banner('✓ '+s.next,'ok',3200);
+    banner('✓ '+s.next,'ok',3500);
     window.scrollTo({top:0,behavior:'smooth'});
   }else{
     shakeEl(el);
-    banner('✗ Špatná odpověď – zkus to znovu nebo použij nápovědu.','err',2800);
-    G.score=Math.max(0,G.score-10);refreshHead();
+    banner('✗ Špatná odpověď – zkus znovu nebo použij nápovědu.','err',2800);
     el.value='';el.focus();
   }
 }
 function shakeEl(el){el.classList.add('shake-it');setTimeout(()=>el.classList.remove('shake-it'),450);}
 
-// ─── HINT ────────────────────────────────────────────────
+// ── HINT ─────────────────────────────────────────────────
 function useHint(){
   const s=ST[G.cur];
   if(!G.hintIdx[G.cur])G.hintIdx[G.cur]=0;
   const idx=G.hintIdx[G.cur]%s.hints.length;
-  document.getElementById('htxt').textContent=s.hints[idx];
-  document.getElementById('hbox').style.display='block';
+  const hb=document.getElementById('hbox');
+  const ht=document.getElementById('htxt');
+  if(hb&&ht){ht.textContent=s.hints[idx];hb.style.display='block';}
   G.hintIdx[G.cur]++;G.hints++;
   G.hintPenalty=(G.hintPenalty||0)+600;
   banner('⏱ Nápověda použita – k výslednému času přičteno <strong>+10 minut</strong>!','tip',3000);
   refreshHead();
 }
 
-// ─── GPS ─────────────────────────────────────────────────
+// ── GPS ──────────────────────────────────────────────────
 function doGPS(){
   const btn=document.getElementById('gps-btn'),st=document.getElementById('gst');
   btn.textContent='⏳ Zjišťuji polohu…';btn.disabled=true;
-  st.textContent='Čekám na GPS signál – povolte přístup k poloze…';
+  st.textContent='Čekám na GPS signál…';
   if(!navigator.geolocation){approveGPS(null);return;}
   navigator.geolocation.getCurrentPosition(
     pos=>{
@@ -561,7 +637,7 @@ function approveGPS(dist){
   const btn=document.getElementById('gps-btn'),st=document.getElementById('gst');
   btn.textContent='✅ GPS poloha ověřena!';btn.style.color='var(--acc)';btn.style.borderColor='var(--acc-d)';
   st.style.color='var(--acc)';
-  st.textContent=dist!=null?`✓ Vzdálenost od terasy: ${Math.round(dist)}m`:'✓ GPS schválena';
+  st.textContent=dist!=null?`✓ Vzdálenost: ${Math.round(dist)}m`:'✓ GPS schválena';
   tryUnlock();
 }
 function haversine(la1,lo1,la2,lo2){
@@ -570,40 +646,38 @@ function haversine(la1,lo1,la2,lo2){
   return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
 }
 
-// ─── PHOTO UPLOAD ─────────────────────────────────────────
-// Rule: any file upload = instant success unlock
+// ── PHOTO ────────────────────────────────────────────────
 function handlePhoto(e){
   const f=e.target.files[0];if(!f)return;
   const r=new FileReader();
   r.onload=ev=>{
     G.photoOk=true;
     const pv=document.getElementById('photo-prev');
-    pv.src=ev.target.result;pv.style.display='block';
+    if(pv){pv.src=ev.target.result;pv.style.display='block';}
     const lbl=document.getElementById('photo-lbl');
-    if(lbl){lbl.textContent='✅ Fotka nahrána – mise téměř splněna!';lbl.style.color='var(--acc)';lbl.style.borderColor='var(--acc-d)';}
+    if(lbl){lbl.textContent='✅ Fotka nahrána!';lbl.style.color='var(--acc)';lbl.style.borderColor='var(--acc-d)';}
     tryUnlock();
   };
   r.readAsDataURL(f);
 }
 function tryUnlock(){
-  // Photo alone is enough; GPS is a bonus
   if(!G.photoOk)return;
   const btn=document.getElementById('fin-btn');
   if(btn)btn.disabled=false;
 }
 function finishGame(){
-  if(!G.photoOk){banner('📸 Nejdřív nahraj foto z terasy!','err');return;}
+  if(!G.photoOk){banner('📸 Nejdřív vlož foto!','err');return;}
   G.score+=ST[6].pts;G.cur=ST.length;endGame();
 }
 
-// ─── FLOW ────────────────────────────────────────────────
+// ── FLOW ─────────────────────────────────────────────────
 function startGame(){
   const n=document.getElementById('team-name').value.trim();
-  if(!n){ 
+  if(!n){
     const inp=document.getElementById('team-name');
     inp.classList.add('shake-it');
     setTimeout(()=>inp.classList.remove('shake-it'),450);
-    inp.placeholder='Nejdříve zadej název týmu!';
+    inp.placeholder='Zadej název týmu!';
     return;
   }
   clearInterval(G.timerRef);
@@ -613,32 +687,38 @@ function startGame(){
   window.scrollTo({top:0});
 }
 
-// Enter on team name triggers start
-document.addEventListener('DOMContentLoaded',()=>{
-  const inp=document.getElementById('team-name');
-  if(inp) inp.addEventListener('keydown',e=>{ if(e.key==='Enter') startGame(); });
-});
 function endGame(){
   clearInterval(G.timerRef);hide('s-game');
   const ws=document.getElementById('s-win');
   ws.style.display='flex';ws.style.flexDirection='column';ws.style.alignItems='center';ws.style.justifyContent='center';
   document.getElementById('v-score').textContent=Math.max(0,G.score);
-  // Final time = real elapsed + hint penalties (10 min each)
-  const totalSec = G.elapsed + G.hintPenalty;
-  const m=Math.floor(totalSec/60), s=totalSec%60;
-  const penStr = G.hintPenalty>0 ? ` (+${G.hintPenalty/60} min)` : '';
-  document.getElementById('v-time').textContent=f2(m)+':'+f2(s)+penStr;
-  document.getElementById('v-hints').textContent=G.hints>0?G.hints+' × +10 min':G.hints;
+  const totalSec=G.elapsed+G.hintPenalty;
+  const m=Math.floor(totalSec/60),s=totalSec%60;
+  const pen=G.hintPenalty>0?` (+${G.hintPenalty/60} min)`:'';
+  document.getElementById('v-time').textContent=f2(m)+':'+f2(s)+pen;
+  document.getElementById('v-hints').textContent=G.hints>0?G.hints+' × +10 min':'0';
   document.getElementById('v-learn').innerHTML=LEARNINGS.map(l=>`<div>${l}</div>`).join('');
   window.scrollTo({top:0,behavior:'smooth'});
 }
+
 function resetGame(){clearInterval(G.timerRef);show('s-intro');hide('s-game');hide('s-win');}
 function show(id){document.getElementById(id).style.display='flex';}
 function hide(id){document.getElementById(id).style.display='none';}
 
-// ─── PWA SERVICE WORKER ───────────────────────────────────
+// ── KEYBOARD / SCROLL ────────────────────────────────────
+document.addEventListener('DOMContentLoaded',()=>{
+  const inp=document.getElementById('team-name');
+  if(inp) inp.addEventListener('keydown',e=>{if(e.key==='Enter')startGame();});
+  document.addEventListener('focusin',e=>{
+    if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'){
+      setTimeout(()=>e.target.scrollIntoView({behavior:'smooth',block:'center'}),350);
+    }
+  });
+});
+
+// ── PWA SERVICE WORKER ───────────────────────────────────
 if('serviceWorker'in navigator){
-  const sw=`const C='escape-lib-v3';
+  const sw=`const C='escape-lib-v4';
 self.addEventListener('install',e=>e.waitUntil(caches.open(C).then(c=>c.addAll(['.']))));
 self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));`;
   const blob=new Blob([sw],{type:'application/javascript'});
