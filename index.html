@@ -47,7 +47,6 @@ body {
 
 /* ── LAYOUT ── */
 .page { min-height: 100vh; min-height: 100dvh; }
-.wrap { max-width: 480px; margin: 0 auto; padding: 0 1rem; }
 
 /* ── CARDS ── */
 .card {
@@ -211,9 +210,21 @@ body {
 .pulse    { animation: pulse 2s ease-in-out infinite; }
 
 /* ── SCREENS ── */
-#s-intro { display: flex; }
-#s-game  { display: none; }
-#s-win   { display: none; }
+#s-intro {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+#s-game {
+  display: none;
+}
+#s-win {
+  display: none;
+}
+
+/* game screen children always stack vertically */
+#s-game > * { display: block; width: 100%; }
 
 /* ── SAFE AREA (notch phones) ── */
 @supports (padding: env(safe-area-inset-bottom)) {
@@ -226,7 +237,7 @@ body {
 <body>
 
 <!-- ═══════════════ INTRO ═══════════════ -->
-<div id="s-intro" class="page" style="flex-direction:column;align-items:center;justify-content:center;padding:2rem 1rem;">
+<div id="s-intro" class="page" style="padding:2rem 1rem;min-height:100dvh;">
 <div style="width:100%;max-width:440px;">
 
   <div style="text-align:center;margin-bottom:2.5rem;">
@@ -252,42 +263,54 @@ body {
 <!-- ═══════════════ GAME ════════════════ -->
 <div id="s-game" class="page">
 
-  <!-- Header -->
+  <!-- Header: team + score only -->
   <div id="hdr" style="background:var(--sur);border-bottom:1.5px solid var(--bor);padding:.75rem 1rem;position:sticky;top:0;z-index:50;">
-    <div style="max-width:480px;margin:0 auto;">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">
-        <div>
-          <div class="label" style="margin-bottom:.15rem;">Tým</div>
-          <div id="h-team" style="font-size:.95rem;font-weight:700;color:var(--txt);">—</div>
-        </div>
-        <div style="text-align:center;">
-          <div class="label" style="margin-bottom:.1rem;">Čas</div>
-          <div id="h-time" style="font-size:2rem;font-weight:700;color:var(--acc);font-variant-numeric:tabular-nums;line-height:1;">60:00</div>
-        </div>
-        <div style="text-align:right;">
-          <div class="label" style="margin-bottom:.15rem;">Skóre</div>
-          <div id="h-score" style="font-size:.95rem;font-weight:700;color:var(--wrn);">700</div>
-        </div>
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">
+      <div>
+        <div class="label" style="margin-bottom:.1rem;">Tým</div>
+        <div id="h-team" style="font-size:1rem;font-weight:700;color:var(--txt);">—</div>
       </div>
-      <div style="background:var(--bor);border-radius:2px;height:4px;"><div id="pb" style="width:0%;"></div></div>
+      <div style="text-align:right;">
+        <div class="label" style="margin-bottom:.1rem;">Skóre</div>
+        <div id="h-score" style="font-size:1rem;font-weight:700;color:var(--wrn);">700</div>
+      </div>
     </div>
+    <div style="background:var(--bor);border-radius:2px;height:4px;"><div id="pb" style="width:0%;"></div></div>
   </div>
 
-  <!-- Dots -->
-  <div style="max-width:480px;margin:.85rem auto;padding:0 1rem;">
-    <div id="dots" style="display:flex;gap:6px;justify-content:center;align-items:center;flex-wrap:wrap;"></div>
+  <!-- Dots – horizontal, left aligned -->
+  <div style="padding:.75rem 1rem .25rem;">
+    <div id="dots" style="display:flex;flex-direction:row;flex-wrap:wrap;gap:6px;justify-content:flex-start;align-items:center;"></div>
   </div>
 
-  <!-- Content -->
-  <div class="wrap" style="padding-bottom:1rem;">
+  <!-- Content – full width, padding at bottom for timer bar -->
+  <div style="padding:.5rem 1rem 8rem;flex:1;">
     <div id="ban"></div>
     <div id="station" class="fade-up"></div>
+  </div>
+
+  <!-- Fixed bottom timer bar -->
+  <div id="timer-bar" style="
+    position:fixed;bottom:0;left:0;right:0;z-index:100;
+    background:var(--sur);
+    border-top:2px solid var(--bor);
+    padding:.65rem 1.5rem;
+    padding-bottom:calc(.65rem + env(safe-area-inset-bottom,0px));
+    display:none;
+    flex-direction:row;
+    align-items:center;
+    justify-content:center;
+    gap:.75rem;
+    box-shadow:0 -4px 24px rgba(0,0,0,.5);
+  ">
+    <span class="label" style="font-size:.8rem;">⏱ ČAS</span>
+    <div id="h-time" style="font-size:2.6rem;font-weight:700;color:var(--acc);font-variant-numeric:tabular-nums;line-height:1;">60:00</div>
   </div>
 
 </div>
 
 <!-- ═══════════════ WIN ════════════════ -->
-<div id="s-win" class="page" style="flex-direction:column;align-items:center;justify-content:center;padding:2rem 1rem;text-align:center;">
+<div id="s-win" class="page" style="padding:2rem 1rem;min-height:100dvh;text-align:center;">
 <div style="width:100%;max-width:440px;">
 
   <div style="font-size:4rem;margin-bottom:1rem;">🎉</div>
@@ -333,7 +356,7 @@ body {
 function norm(raw){
   return raw.trim().toLowerCase()
     .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
-    .replace(/doi[\s\n\r:]+/g,'')
+    .replace(/doi[\s\n\r:]*/g,'')   // strip DOI, DOI:, DOI10, DOI 10 atd.
     .replace(/\s+/g,'');
 }
 
@@ -702,7 +725,13 @@ function endGame(){
 }
 
 function resetGame(){clearInterval(G.timerRef);show('s-intro');hide('s-game');hide('s-win');}
-function show(id){document.getElementById(id).style.display='flex';}
+function show(id){
+  const el=document.getElementById(id);
+  el.style.display = id==='s-game' ? 'block' : 'flex';
+  if(id==='s-win'){ el.style.flexDirection='column'; el.style.alignItems='center'; el.style.justifyContent='center'; }
+  const tb=document.getElementById('timer-bar');
+  if(tb) tb.style.display = id==='s-game' ? 'flex' : 'none';
+}
 function hide(id){document.getElementById(id).style.display='none';}
 
 // ── KEYBOARD / SCROLL ────────────────────────────────────
