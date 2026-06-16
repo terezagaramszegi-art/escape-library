@@ -522,13 +522,20 @@ function render(){
 
   let inner='';
 
-  // Station 1: minimal (video only then input)
+  // Station 1: minimal (embedded video + input)
   if(s.minimal){
     box.innerHTML=`
       <div class="card" style="text-align:center;">
-        <a href="${YT_URL}" target="_blank" rel="noopener" class="btn btn-video" style="margin-bottom:1rem;font-size:1.1rem;">
-          ▶&nbsp; HRA ZAČÍNÁ ZDE
-        </a>
+        <div style="position:relative;width:100%;padding-bottom:56.25%;border-radius:10px;overflow:hidden;margin-bottom:.85rem;">
+          <iframe
+            src="https://www.youtube.com/embed/xNC5-X_Arm4?rel=0&playsinline=1"
+            title="HRA ZAČÍNÁ ZDE"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+            style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius:10px;">
+          </iframe>
+        </div>
         <p style="font-size:.9rem;color:var(--txt-m);">Přehraj video a zjisti, co hledáš.</p>
       </div>
       <div class="card">
