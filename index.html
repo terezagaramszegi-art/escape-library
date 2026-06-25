@@ -360,8 +360,10 @@ function norm(raw){
     .replace(/\s+/g,'');
 }
 
-// ── YOUTUBE URL ──────────────────────────────────────────
-const YT_URL = 'https://www.youtube.com/watch?v=xNC5-X_Arm4';
+// ── VIDEO ID (jediný zdroj pravdy) ───────────────────────
+const VIDEO_ID = '4xsUPn1AoX8';
+const YT_URL   = 'https://www.youtube.com/watch?v=' + VIDEO_ID;
+const YT_EMBED = 'https://www.youtube.com/embed/'   + VIDEO_ID + '?rel=0&modestbranding=1';
 
 // ── STATION DATA ─────────────────────────────────────────
 const ST = [
@@ -528,7 +530,7 @@ function render(){
       <div class="card" style="text-align:center;">
         <div style="position:relative;width:100%;padding-bottom:56.25%;border-radius:10px;overflow:hidden;margin-bottom:.85rem;">
           <iframe
-            src="https://www.youtube.com/watch?v=4xsUPn1AoX8"
+            src="${YT_EMBED}"
             title="HRA ZAČÍNÁ ZDE"
             frameborder="0"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
@@ -763,3 +765,6 @@ self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r
 </script>
 </body>
 </html>
+
+
+
