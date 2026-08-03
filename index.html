@@ -14,37 +14,29 @@
 <style>
 /* ── TOKENS ── */
 :root {
-  --bg:      #0f172a;
-  --sur:     #1e293b;
-  --sur2:    #273549;
-  --bor:     #334155;
-  --bor2:    #475569;
-  --acc:     #34d399;
-  --acc-d:   #059669;
-  --acc-txt: #064e3b;
-  --txt:     #f1f5f9;
-  --txt-m:   #94a3b8;
-  --txt-s:   #cbd5e1;
-  --bad:     #f87171;
-  --wrn:     #fbbf24;
-  --info:    #60a5fa;
-  --radius:  14px;
-  --radius-s:10px;
+  --bg:        #0f172a;
+  --sur:       #1e293b;
+  --sur2:      #273549;
+  --bor:       #334155;
+  --bor2:      #475569;
+  --acc:       #34d399;
+  --acc-d:     #059669;
+  --acc-txt:   #064e3b;
+  --txt:       #f1f5f9;
+  --txt-m:     #94a3b8;
+  --txt-s:     #cbd5e1;
+  --bad:       #f87171;
+  --wrn:       #fbbf24;
+  --info:      #60a5fa;
+  --radius:    14px;
+  --radius-s:  10px;
 }
 
 /* ── RESET ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
-body <!-- OBRAZOVKA VÝBĚRU JAZYKA -->
-<div id="language-screen">
-  <h1>Úniková hra Knihovny ČZU</h1>
-  <p>Vyberte si jazyk hry / Select your language</p>
 
-  <div class="lang-buttons">
-    <button class="lang-btn" onclick="selectLanguage('cs')">🇨🇿 Čeština</button>
-    <button class="lang-btn" onclick="selectLanguage('en')">🇬🇧 English</button>
-  </div>
-</div>{
+body {
   background: var(--bg);
   color: var(--txt);
   font-family: 'Inter', system-ui, sans-serif;
@@ -52,6 +44,64 @@ body <!-- OBRAZOVKA VÝBĚRU JAZYKA -->
   line-height: 1.6;
   overflow-x: hidden;
   -webkit-text-size-adjust: 100%;
+}
+
+/* ── OBRAZOVKA VÝBĚRU JAZYKA ── */
+#language-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--bg);
+  color: var(--txt);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  text-align: center;
+  padding: 20px;
+}
+
+#language-screen h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--acc);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.05em;
+}
+
+#language-screen p {
+  font-size: 1rem;
+  margin-bottom: 2rem;
+  color: var(--txt-m);
+}
+
+.lang-buttons {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.lang-btn {
+  background-color: var(--sur);
+  color: var(--txt);
+  border: 2px solid var(--bor);
+  padding: 14px 28px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: var(--radius-s);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 150px;
+}
+
+.lang-btn:hover {
+  border-color: var(--acc);
+  color: var(--acc);
+  transform: translateY(-2px);
 }
 
 /* ── LAYOUT ── */
@@ -220,7 +270,7 @@ body <!-- OBRAZOVKA VÝBĚRU JAZYKA -->
 
 /* ── SCREENS ── */
 #s-intro {
-  display: flex;
+  display: none;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -244,6 +294,17 @@ body <!-- OBRAZOVKA VÝBĚRU JAZYKA -->
 </style>
 </head>
 <body>
+
+<!-- ═══════════════ OBRAZOVKA VÝBĚRU JAZYKA ═══════════════ -->
+<div id="language-screen">
+  <h1>Úniková hra Knihovny ČZU</h1>
+  <p>Vyberte si jazyk hry / Select your language</p>
+
+  <div class="lang-buttons">
+    <button class="lang-btn" onclick="selectLanguage('cs')">🇨🇿 Čeština</button>
+    <button class="lang-btn" onclick="selectLanguage('en')">🇬🇧 English</button>
+  </div>
+</div>
 
 <!-- ═══════════════ INTRO ═══════════════ -->
 <div id="s-intro" class="page" style="padding:2rem 1rem;min-height:100dvh;">
@@ -361,6 +422,16 @@ body <!-- OBRAZOVKA VÝBĚRU JAZYKA -->
 
 <!-- ═══════════════ SCRIPT ════════════════ -->
 <script>
+// ── PŘEPÍNÁNÍ JAZYKA ─────────────────────────────────────
+function selectLanguage(lang) {
+  if (lang === 'cs') {
+    document.getElementById('language-screen').style.display = 'none';
+    show('s-intro');
+  } else if (lang === 'en') {
+    window.location.href = 'index1.html';
+  }
+}
+
 // ── NORMALIZATION ────────────────────────────────────────
 function norm(raw){
   return raw.trim().toLowerCase()
@@ -437,7 +508,7 @@ const ST = [
     task:'Zadej kód',
     ph:'4písmenný akronym',
     ans:['fair'],
-    next:'Data jsou FAIR a letí do světa! Najdeš svého průvodce studiem v kanceláři č. 209!',
+    next:'Data jsou FAIR a letí do světa! Najdeš svého průvodce studiem v kanceláří č. 209!',
     hints:[
       '💡 Navštiv CKSD – kancelář 221c nebo web: lib.czu.cz → Open Science → Správa dat',
       '💡 Každý řádek začíná prázdnou závorkou [ ] – doplň první písmeno každého slova',
@@ -742,11 +813,18 @@ function endGame(){
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-function resetGame(){clearInterval(G.timerRef);show('s-intro');hide('s-game');hide('s-win');}
+function resetGame(){
+  clearInterval(G.timerRef);
+  document.getElementById('language-screen').style.display = 'flex';
+  hide('s-intro');
+  hide('s-game');
+  hide('s-win');
+}
+
 function show(id){
   const el=document.getElementById(id);
   el.style.display = id==='s-game' ? 'block' : 'flex';
-  if(id==='s-win'){ el.style.flexDirection='column'; el.style.alignItems='center'; el.style.justifyContent='center'; }
+  if(id==='s-win'||id==='s-intro'){ el.style.flexDirection='column'; el.style.alignItems='center'; el.style.justifyContent='center'; }
   const tb=document.getElementById('timer-bar');
   if(tb) tb.style.display = id==='s-game' ? 'flex' : 'none';
 }
@@ -774,6 +852,3 @@ self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r
 </script>
 </body>
 </html>
-
-
-
