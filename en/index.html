@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CZU Library Escape Game</title>
+  <style>
+    /* Styling pro prvotní obrazovku výběru jazyka */
+    #language-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #1a1a2e;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      text-align: center;
+      padding: 20px;
+    }
+
+    #language-screen h1 {
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+    }
+
+    #language-screen p {
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+      color: #cccccc;
+    }
+
+    .lang-buttons {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .lang-btn {
+      background-color: #0f3460;
+      color: #ffffff;
+      border: 2px solid #e94560;
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      min-width: 160px;
+    }
+
+    .lang-btn:hover {
+      background-color: #e94560;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. OBRAZOVKA VÝBĚRU JAZYKA (LANGUAGE SELECT SCREEN) -->
+  <div id="language-screen">
+    <h1>CZU Library Escape Game</h1>
+    <p>Select your language / Vyberte si jazyk hry</p>
+    
+    <div class="lang-buttons">
+      <!-- Tlačítko pro češtinu přesměruje na index.html -->
+      <button class="lang-btn" onclick="selectLanguage('cs')">🇨🇿 Čeština</button>
+      <!-- Tlačítko pro angličtinu skryje rozcestník a spustí anglickou hru -->
+      <button class="lang-btn" onclick="selectLanguage('en')">🇬🇧 English</button>
+    </div>
+  </div>
+
+  <!-- MAIN GAME SCREEN (Anglická verze) -->
+  <div id="game-main-content" style="display: none;">
+    <h1>CZU Library Escape Game</h1>
+    <p>Welcome to the Mission!</p>
+    <p>A rogue researcher has hidden a secret code inside the library system. Watch the introductory video carefully and find the antidote before time runs out!</p>
+
+    <button id="start-btn">Start Mission</button>
+
+    <div id="station-1">
+      <h2>Station 1</h2>
+      <p>Task loading...</p>
+      <input type="text" placeholder="Enter code">
+      <button>Submit Answer</button>
+      <button>Need a Hint?</button>
+    </div>
+  </div>
+
+  <script>
+    function selectLanguage(lang) {
+      if (lang === 'cs') {
+        // Přesměrování na českou verzi (např. index.html)
+        window.location.href = 'index.html';
+      } else if (lang === 'en') {
+        // Skrytí výběru jazyka a zobrazení anglické hry
+        document.getElementById('language-screen').style.display = 'none';
+        document.getElementById('game-main-content').style.display = 'block';
+      }
+    }
+  </script>
+
+</body>
+</html>
