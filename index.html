@@ -35,7 +35,16 @@
 /* ── RESET ── */
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 html { scroll-behavior: smooth; }
-body {
+body <!-- OBRAZOVKA VÝBĚRU JAZYKA -->
+<div id="language-screen">
+  <h1>Úniková hra Knihovny ČZU</h1>
+  <p>Vyberte si jazyk hry / Select your language</p>
+
+  <div class="lang-buttons">
+    <button class="lang-btn" onclick="selectLanguage('cs')">🇨🇿 Čeština</button>
+    <button class="lang-btn" onclick="selectLanguage('en')">🇬🇧 English</button>
+  </div>
+</div>{
   background: var(--bg);
   color: var(--txt);
   font-family: 'Inter', system-ui, sans-serif;
