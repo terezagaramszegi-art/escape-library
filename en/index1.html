@@ -1,0 +1,962 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="theme-color" content="#0f172a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Escape Library">
+<title>Escape Library – CZU Library</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Lora:ital,wght@0,600;1,500&display=swap" rel="stylesheet">
+
+<style>
+/* ── TOKENS ── */
+:root {
+  --bg:        #0f172a;
+  --sur:       #1e293b;
+  --sur2:      #273549;
+  --bor:       #334155;
+  --bor2:      #475569;
+  --acc:       #34d399;
+  --acc-d:     #059669;
+  --acc-txt:   #064e3b;
+  --txt:       #f1f5f9;
+  --txt-m:     #94a3b8;
+  --txt-s:     #cbd5e1;
+  --bad:       #f87171;
+  --wrn:       #fbbf24;
+  --info:      #60a5fa;
+  --radius:    14px;
+  --radius-s:  10px;
+}
+
+/* ── RESET ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--txt);
+  font-family: 'Inter', system-ui, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  overflow-x: hidden;
+  -webkit-text-size-adjust: 100%;
+}
+
+/* ── LANGUAGE SELECT SCREEN ── */
+#language-screen {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: var(--bg);
+  color: var(--txt);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  text-align: center;
+  padding: 20px;
+}
+
+#language-screen h1 {
+  font-size: 2rem;
+  font-weight: 700;
+  color: var(--acc);
+  margin-bottom: 0.5rem;
+  letter-spacing: 0.05em;
+}
+
+#language-screen p {
+  font-size: 1rem;
+  margin-bottom: 2rem;
+  color: var(--txt-m);
+}
+
+.lang-buttons {
+  display: flex;
+  gap: 15px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.lang-btn {
+  background-color: var(--sur);
+  color: var(--txt);
+  border: 2px solid var(--bor);
+  padding: 14px 28px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border-radius: var(--radius-s);
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-width: 150px;
+}
+
+.lang-btn:hover {
+  border-color: var(--acc);
+  color: var(--acc);
+  transform: translateY(-2px);
+}
+
+/* ── LAYOUT ── */
+.page { min-height: 100vh; min-height: 100dvh; }
+
+/* ── CARDS ── */
+.card {
+  background: var(--sur);
+  border: 1.5px solid var(--bor);
+  border-radius: var(--radius);
+  padding: 1.25rem;
+  margin-bottom: 1rem;
+}
+.inset {
+  background: var(--bg);
+  border: 1.5px solid var(--bor);
+  border-radius: var(--radius-s);
+  padding: .85rem 1rem;
+}
+
+/* ── TYPOGRAPHY ── */
+.label  { font-size: .7rem; font-weight: 600; letter-spacing: .12em; color: var(--txt-m); text-transform: uppercase; }
+.body   { font-size: 1rem;  line-height: 1.75; color: var(--txt-s); }
+.serif  { font-family: 'Lora', serif; }
+.cipher { font-family: 'Courier New', monospace; font-size: 1.05rem; letter-spacing: .08em; color: var(--acc); line-height: 2; }
+
+/* ── BUTTONS ── */
+.btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 54px;
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  font-weight: 600;
+  letter-spacing: .02em;
+  border: none;
+  border-radius: var(--radius-s);
+  padding: .85rem 1.25rem;
+  cursor: pointer;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: opacity .15s, transform .1s;
+  text-decoration: none;
+  gap: .5rem;
+}
+.btn:active { transform: scale(.97); }
+.btn:disabled { opacity: .35; cursor: not-allowed; transform: none; }
+
+.btn-go   { background: var(--acc);   color: var(--acc-txt); }
+.btn-go:not(:disabled):hover { opacity: .9; }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--txt-m);
+  border: 1.5px solid var(--bor);
+}
+.btn-ghost:not(:disabled):hover { border-color: var(--bor2); color: var(--txt); }
+
+.btn-video {
+  background: #ef4444;
+  color: #fff;
+  font-size: 1.05rem;
+}
+.btn-video:hover { opacity: .9; }
+
+/* ── INPUT ── */
+.field {
+  background: var(--bg);
+  border: 2px solid var(--bor);
+  border-radius: var(--radius-s);
+  color: var(--txt);
+  font-family: 'Inter', sans-serif;
+  font-size: 18px;        /* min 16px prevents iOS zoom */
+  font-weight: 500;
+  padding: .9rem 1rem;
+  width: 100%;
+  outline: none;
+  caret-color: var(--acc);
+  transition: border-color .2s;
+  -webkit-appearance: none;
+}
+.field:focus { border-color: var(--acc-d); }
+.field::placeholder { color: var(--bor2); font-size: 15px; font-weight: 400; }
+
+/* ── POEM ── */
+.poem-block {
+  font-family: 'Lora', serif;
+  font-style: italic;
+  font-size: 1.05rem;
+  line-height: 2.1;
+  color: var(--txt-s);
+  text-align: center;
+  padding: 1rem;
+  border-left: 3px solid var(--acc-d);
+  background: var(--sur2);
+  border-radius: 0 var(--radius-s) var(--radius-s) 0;
+}
+
+/* ── DOTS ── */
+.dot {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  display: flex; align-items: center; justify-content: center;
+  font-size: .75rem; font-weight: 700;
+  border: 2px solid;
+  flex-shrink: 0;
+  transition: all .3s;
+  touch-action: manipulation;
+}
+.done   { background: var(--acc-d);  border-color: var(--acc);  color: var(--acc-txt); }
+.active { background: var(--acc);    border-color: var(--acc);  color: var(--acc-txt); box-shadow: 0 0 0 4px rgba(52,211,153,.2); }
+.locked { background: transparent;  border-color: var(--bor);  color: var(--txt-m); }
+
+/* ── PROGRESS BAR ── */
+#pb { height: 4px; background: var(--acc); border-radius: 2px; transition: width .5s; }
+
+/* ── BANNERS ── */
+.banner {
+  border-radius: var(--radius-s);
+  padding: .85rem 1rem;
+  font-size: .9rem;
+  font-weight: 500;
+  margin-bottom: .85rem;
+  display: flex;
+  align-items: flex-start;
+  gap: .5rem;
+}
+.ok  { background: rgba(52,211,153,.12); border: 1.5px solid rgba(52,211,153,.35); color: #6ee7b7; }
+.err { background: rgba(248,113,113,.12); border: 1.5px solid rgba(248,113,113,.35); color: var(--bad); }
+.tip { background: rgba(251,191,36,.12);  border: 1.5px solid rgba(251,191,36,.35);  color: var(--wrn); }
+
+/* ── HINT BOX ── */
+.hint-box {
+  background: rgba(251,191,36,.08);
+  border: 1.5px solid rgba(251,191,36,.3);
+  border-radius: var(--radius-s);
+  padding: 1rem;
+  margin-top: .75rem;
+  font-size: .95rem;
+  color: var(--wrn);
+  line-height: 1.65;
+  display: none;
+}
+
+/* ── PHOTO PREVIEW ── */
+#photo-prev {
+  display: none;
+  width: 100%;
+  max-height: 220px;
+  object-fit: cover;
+  border-radius: var(--radius-s);
+  border: 2px solid var(--acc-d);
+  margin-top: .75rem;
+}
+
+/* ── ANIMATIONS ── */
+@keyframes fadeUp { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+@keyframes shake  { 0%,100%{transform:translateX(0)} 25%{transform:translateX(-7px)} 75%{transform:translateX(7px)} }
+@keyframes pulse  { 0%,100%{box-shadow:0 0 0 0 rgba(52,211,153,.3)} 50%{box-shadow:0 0 0 8px rgba(52,211,153,0)} }
+
+.fade-up  { animation: fadeUp .3s ease forwards; }
+.shake-it { animation: shake .4s ease; }
+.pulse    { animation: pulse 2s ease-in-out infinite; }
+
+/* ── SCREENS ── */
+#s-intro {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+#s-game {
+  display: none;
+}
+#s-win {
+  display: none;
+}
+
+/* game screen children always stack vertically */
+#s-game > * { display: block; width: 100%; }
+
+/* ── SAFE AREA (notch phones) ── */
+@supports (padding: env(safe-area-inset-bottom)) {
+  #s-game  { padding-bottom: calc(2rem + env(safe-area-inset-bottom)); }
+  #s-intro { padding-bottom: calc(1.5rem + env(safe-area-inset-bottom)); }
+  #hdr     { padding-top: calc(.75rem + env(safe-area-inset-top)); }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════ LANGUAGE SELECT SCREEN ═══════════════ -->
+<div id="language-screen">
+  <h1>CZU Library Escape Game</h1>
+  <p>Select your language / Vyberte si jazyk hry</p>
+
+  <div class="lang-buttons">
+    <button class="lang-btn" onclick="selectLanguage('cs')">🇨🇿 Čeština</button>
+    <button class="lang-btn" onclick="selectLanguage('en')">🇬🇧 English</button>
+  </div>
+</div>
+
+<!-- ═══════════════ INTRO ═══════════════ -->
+<div id="s-intro" class="page" style="padding:2rem 1rem;min-height:100dvh;">
+<div style="width:100%;max-width:440px;">
+
+  <div style="text-align:center;margin-bottom:2.5rem;">
+    <div style="font-size:3.5rem;margin-bottom:.75rem;">🌿</div>
+    <h1 style="font-size:1.6rem;font-weight:700;color:var(--acc);letter-spacing:.06em;margin-bottom:.5rem;">ESCAPE LIBRARY</h1>
+    <p style="font-size:.85rem;color:var(--txt-m);letter-spacing:.1em;">CZU LIBRARY</p>
+  </div>
+
+  <div class="card" style="margin-bottom:1.5rem;text-align:center;">
+    <p style="font-size:1.05rem;line-height:1.8;color:var(--txt);">Welcome to the escape game for CZU students – come discover the world of the CZU Library and everything it has to offer.</p>
+  </div>
+
+  <div style="margin-bottom:1.25rem;">
+    <label style="display:block;font-size:.85rem;font-weight:600;color:var(--txt-m);margin-bottom:.5rem;">Team name</label>
+    <input class="field" id="team-name" placeholder="Enter your team name…" maxlength="30" style="text-align:center;font-size:18px;">
+  </div>
+
+  <button class="btn btn-go pulse" onclick="startGame()" style="font-size:1.1rem;">▶&nbsp; Start Mission</button>
+
+</div>
+</div>
+
+<!-- ═══════════════ GAME ════════════════ -->
+<div id="s-game" class="page">
+
+  <!-- Header: team + score only -->
+  <div id="hdr" style="background:var(--sur);border-bottom:1.5px solid var(--bor);padding:.75rem 1rem;position:sticky;top:0;z-index:50;">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">
+      <div>
+        <div class="label" style="margin-bottom:.1rem;">Team</div>
+        <div id="h-team" style="font-size:1rem;font-weight:700;color:var(--txt);">—</div>
+      </div>
+      <div style="text-align:right;">
+        <div class="label" style="margin-bottom:.1rem;">Score</div>
+        <div id="h-score" style="font-size:1rem;font-weight:700;color:var(--wrn);">700</div>
+      </div>
+    </div>
+    <div style="background:var(--bor);border-radius:2px;height:4px;"><div id="pb" style="width:0%;"></div></div>
+  </div>
+
+  <!-- Dots – horizontal, left aligned -->
+  <div style="padding:.75rem 1rem .25rem;">
+    <div id="dots" style="display:flex;flex-direction:row;flex-wrap:wrap;gap:6px;justify-content:flex-start;align-items:center;"></div>
+  </div>
+
+  <!-- Content – full width, padding at bottom for timer bar -->
+  <div style="padding:.5rem 1rem 8rem;flex:1;">
+    <div id="ban"></div>
+    <div id="station" class="fade-up"></div>
+  </div>
+
+  <!-- Fixed bottom timer bar -->
+  <div id="timer-bar" style="
+    position:fixed;bottom:0;left:0;right:0;z-index:100;
+    background:var(--sur);
+    border-top:2px solid var(--bor);
+    padding:.65rem 1.5rem;
+    padding-bottom:calc(.65rem + env(safe-area-inset-bottom,0px));
+    display:none;
+    flex-direction:row;
+    align-items:center;
+    justify-content:center;
+    gap:.75rem;
+    box-shadow:0 -4px 24px rgba(0,0,0,.5);
+  ">
+    <span class="label" style="font-size:.8rem;">⏱ TIME</span>
+    <div id="h-time" style="font-size:2.6rem;font-weight:700;color:var(--acc);font-variant-numeric:tabular-nums;line-height:1;">60:00</div>
+  </div>
+
+</div>
+
+<!-- ═══════════════ WIN ════════════════ -->
+<div id="s-win" class="page" style="padding:2rem 1rem;min-height:100dvh;text-align:center;">
+<div style="width:100%;max-width:440px;">
+
+  <div style="font-size:4rem;margin-bottom:1rem;">🎉</div>
+  <h2 style="font-size:1.75rem;font-weight:700;color:var(--acc);margin-bottom:.4rem;">Mission Complete!</h2>
+  <p class="label" style="margin-bottom:2rem;">Pollen attack stopped · CZU saved</p>
+
+  <div class="card" style="text-align:left;margin-bottom:1rem;">
+    <p class="serif" style="font-style:italic;font-size:1rem;line-height:1.8;color:var(--txt-s);">"I admit… I could have put a bit more effort into my thesis. Your knowledge of the CZU Library is impressive."</p>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem;margin-bottom:1rem;">
+    <div class="inset" style="text-align:center;padding:1rem .5rem;">
+      <div class="label" style="margin-bottom:.3rem;">Score</div>
+      <div id="v-score" style="font-size:1.5rem;font-weight:700;color:var(--wrn);">—</div>
+    </div>
+    <div class="inset" style="text-align:center;padding:1rem .5rem;">
+      <div class="label" style="margin-bottom:.3rem;">Time</div>
+      <div id="v-time" style="font-size:1.35rem;font-weight:700;color:var(--acc);">—</div>
+    </div>
+    <div class="inset" style="text-align:center;padding:1rem .5rem;">
+      <div class="label" style="margin-bottom:.3rem;">Hints</div>
+      <div id="v-hints" style="font-size:1.35rem;font-weight:700;color:var(--bad);">—</div>
+    </div>
+  </div>
+
+  <div class="card" style="text-align:left;margin-bottom:1rem;">
+    <p class="label" style="margin-bottom:.75rem;">What you learned</p>
+    <div id="v-learn" style="font-size:.95rem;line-height:2.3;color:var(--txt-s);"></div>
+  </div>
+
+  <div class="card" style="margin-bottom:1.5rem;background:rgba(52,211,153,.08);border-color:var(--acc-d);">
+    <p style="font-size:1rem;text-align:center;color:var(--acc);font-weight:600;">🎁 Pick up your reward at the Circulation Desk!</p>
+  </div>
+
+  <button class="btn btn-ghost" onclick="resetGame()">↩&nbsp; Play Again</button>
+
+</div>
+</div>
+
+<!-- ═══════════════ SCRIPT ════════════════ -->
+<script>
+// ── LANGUAGE SWITCHING ───────────────────────────────────
+function selectLanguage(lang) {
+  if (lang === 'en') {
+    document.getElementById('language-screen').style.display = 'none';
+    show('s-intro');
+  } else if (lang === 'cs') {
+    window.location.href = 'index.html';
+  }
+}
+
+// ── NORMALIZATION ────────────────────────────────────────
+function norm(raw){
+  return raw.trim().toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
+    .replace(/doi[\s\n\r:]*/g,'')   // strip DOI, DOI:, DOI10, DOI 10 etc.
+    .replace(/\s+/g,'');
+}
+
+// ── VIDEO ID (single source of truth) ────────────────────
+const VIDEO_ID = 'D_jJNjGSSv0';
+const YT_URL   = 'https://www.youtube.com/watch?v=' + VIDEO_ID;
+const YT_EMBED = 'https://www.youtube.com/embed/'   + VIDEO_ID + '?rel=0&modestbranding=1';
+
+// ── STATION DATA ─────────────────────────────────────────
+const ST = [
+  {
+    id:1, name:'Circulation Desk', pts:100,
+    minimal:true,
+    story:'',
+    task:'Enter code',
+    ph:'call number',
+    ans:['z25446','z 25446'],
+    next:'Excellent! That madman wrote about genetically modified plants in the 2010 issue of the Bee-Keeping journal. Hurry to the Reading Room!',
+    hints:[
+      '💡 Open the Aleph online catalogue at lib.czu.cz → Book catalogue → enter the book title from the video',
+      '💡 The call number is the book\'s code: a letter + numbers (example: Z 12345)',
+      '💡 The call number starts with the letter Z and contains the number 25446'
+    ]
+  },
+  {
+    id:2, name:'Reading Room', pts:100,
+    story:'Excellent.<br><br>Genetically modified plants were already being written about back in issue 2010/3 of the Bee-Keeping journal. But I can\'t remember which page it was on...!',
+    task:'Enter code',
+    ph:'page number',
+    ans:['82'],
+    next:'You\'ve got it! But a bitter student tried to erase the digital trace of the antidote. Quick, to the Computer Study Room!',
+    hints:[
+      '💡 Go to the Reading Room – 2nd floor, room 231b, printed periodicals section',
+      '💡 On the shelf by Bee-Keeping, look for a laminated game card – it will point you to the right article and page',
+      '💡 You\'re looking for a two-digit page number between 80–90'
+    ]
+  },
+  {
+    id:3, name:'Computer Study Room', pts:100,
+    story:'But surely I can\'t go to the library at night just for that article?<br><br>Apparently articles are available 24/7, and I can find the best ones in something called Web of Science... I just need to know the title or the DOI.',
+    cipher:'H _ _ _ Y &nbsp;as a&nbsp; N _ _ _ _ _ L<br>A N T I _ _ _ _ _ B _ _ L',
+    task:'Enter code',
+    ph:'DOI of the article (10.xxxx/…)',
+    ans:['10.3390/antibiotics14030255'],
+    next:'Unique identifier found! The last fragment is hidden in the Silent Study Room – tread quietly!',
+    hints:[
+      '💡 Go to the Computer Study Room – ground floor, room 140. Log in to Web of Science through the library website',
+      '💡 1st word = what bees produce · 2nd word = the opposite of artificial · 3rd word = fights against microorganisms',
+      '💡 The DOI starts with 10. The article is from the journal Antibiotics, year 2025'
+    ]
+  },
+  {
+    id:4, name:'Great Study Room', pts:100,
+    poem:'In the hush of the study room the answer hides,\nnot every BIO neatly abides.\nUnravel the words that sleep on the silent shelf,\nGeneral Genetics points the way itself,\nand the right group will reveal its name.',
+    task:'Enter code',
+    ph:'group label (BIO 000)',
+    ans:['bio575','bio 575'],
+    next:'Great! You need to share the data according to Open Science rules. Hurry to the experts at CKSD!',
+    hints:[
+      '💡 Go to the Great Study Room – ground floor, Silent Zone (open-access books)',
+      '💡 The poem\'s keyword is BIO – look for the shelf in the General Genetics section',
+      '💡 The group number is 575 – look for shelf BIO 575'
+    ]
+  },
+  {
+    id:5, name:'CKSD – Open Science', pts:100,
+    story:'For laboratories around the world to be able to instantly replicate the antidote, the data must meet 4 principles.',
+    cipher:'[ ] i n d a b l e<br>[ ] c c e s s i b l e<br>[ ] n t e r o p e r a b l e<br>[ ] e u s a b l e',
+    task:'Enter code',
+    ph:'4-letter acronym',
+    ans:['fair'],
+    next:'The data is FAIR and flying out into the world! You\'ll find your study guide in office no. 209!',
+    hints:[
+      '💡 Visit CKSD – office 221c, or the website: lib.czu.cz → Open Science → Data management',
+      '💡 Each line starts with an empty bracket [ ] – fill in the first letter of each word',
+      '💡 Order: F · A · I · R'
+    ]
+  },
+  {
+    id:6, name:'Office 209', pts:100,
+    story:'If you\'re not sure how to handle citations, just ask:',
+    choices:['🅐&nbsp; mom@xyz.cz','🅑&nbsp; Chat GPT','🅒&nbsp; consultation@lib.czu.cz','🅓&nbsp; the library\'s raccoon mascot'],
+    choiceCorrect: 2,
+    task:'Enter code',
+    ph:'A / B / C / D or e-mail',
+    ans:['c','consultation@lib.czu.cz'],
+    next:'Exactly right – we\'re here for you! Head to the terrace and confirm your mission\'s success!',
+    hints:[
+      '💡 Go to the 2nd floor – office no. 209, Information Support and Education Department',
+      '💡 The correct answer is the letter C, or the full e-mail address',
+      '💡 The CZU Library offers free consultations – just ask!'
+    ]
+  },
+  {
+    id:7, name:'Terrace – Finale!', pts:100,
+    story:'<div style="text-align:center;margin-bottom:1.25rem;"><svg viewBox="0 0 120 180" width="90" height="135" xmlns="http://www.w3.org/2000/svg"><rect x="35" y="70" width="55" height="90" rx="10" fill="#059669"/><rect x="48" y="45" width="28" height="28" rx="5" fill="#065f46"/><rect x="52" y="30" width="20" height="12" rx="4" fill="#34d399"/><rect x="70" y="34" width="22" height="6" rx="3" fill="#34d399"/><circle cx="97" cy="28" r="2.5" fill="#6ee7b7" opacity=".8"/><circle cx="103" cy="23" r="2" fill="#6ee7b7" opacity=".6"/><circle cx="100" cy="19" r="1.5" fill="#6ee7b7" opacity=".4"/><circle cx="107" cy="30" r="1.5" fill="#6ee7b7" opacity=".5"/><rect x="42" y="95" width="40" height="45" rx="4" fill="#d1fae5" opacity=".12"/><text x="62" y="115" text-anchor="middle" font-size="7" fill="#34d399" font-family="monospace" font-weight="bold">ANTI</text><text x="62" y="126" text-anchor="middle" font-size="7" fill="#34d399" font-family="monospace" font-weight="bold">DOTE</text><rect x="42" y="78" width="8" height="40" rx="4" fill="white" opacity=".1"/></svg></div><p style="font-size:1rem;line-height:1.8;color:var(--txt);text-align:center;">The impossible has happened! You\'ve found the antidote — all that\'s left is to find the right spot in the library with a view of <strong style="color:var(--acc);">Prague Castle</strong>, and document your success.</p>',
+    gps:true,
+    gpsTarget:{ lat:50.1285997, lng:14.3731636, r:10 },
+    task:'Upload a photo as proof you completed the mission.',
+    hints:[
+      '💡 The terrace is reached via the 2nd floor of the building',
+      '💡 GPS can take a few seconds – allow location access and wait',
+      '💡 Any photo you upload counts!'
+    ]
+  }
+];
+
+const LEARNINGS=[
+  '✅ Searching for books in the Aleph online catalogue',
+  '✅ Finding your way around the Reading Room – printed periodicals',
+  '✅ Working with the international Web of Science database',
+  '✅ Finding books in the Great Study Room by call number',
+  '✅ Principles of Open Science and data management (FAIR)',
+  '✅ Making use of the CZU Library\'s consultation services',
+  '✅ Photo proof from the terrace – mission complete! 📸'
+];
+
+// ── STATE ────────────────────────────────────────────────
+let G={team:'',cur:0,score:700,hints:0,hintPenalty:0,timerRef:null,startMs:0,elapsed:0,photoOk:false,gpsOk:false,hintIdx:[]};
+
+// ── TIMER ────────────────────────────────────────────────
+function startTimer(){
+  G.startMs=Date.now();
+  G.timerRef=setInterval(()=>{
+    G.elapsed=Math.floor((Date.now()-G.startMs)/1000);
+    const rem=Math.max(0,3600-G.elapsed);
+    const el=document.getElementById('h-time');
+    el.textContent=f2(Math.floor(rem/60))+':'+f2(rem%60);
+    el.style.color=rem<=300?'var(--bad)':rem<=600?'var(--wrn)':'var(--acc)';
+    if(!rem)clearInterval(G.timerRef);
+  },1000);
+}
+function f2(n){return String(n).padStart(2,'0');}
+function elStr(){const m=Math.floor(G.elapsed/60),s=G.elapsed%60;return f2(m)+':'+f2(s);}
+
+// ── HEAD / DOTS ──────────────────────────────────────────
+function refreshHead(){
+  document.getElementById('h-team').textContent=G.team;
+  document.getElementById('h-score').textContent=Math.max(0,G.score);
+  document.getElementById('pb').style.width=(G.cur/ST.length*100)+'%';
+}
+function refreshDots(){
+  const c=document.getElementById('dots');c.innerHTML='';
+  ST.forEach((_,i)=>{
+    const d=document.createElement('div');
+    d.className='dot '+(i<G.cur?'done':i===G.cur?'active':'locked');
+    d.title=ST[i].name;
+    d.textContent=i<G.cur?'✓':(i+1);
+    c.appendChild(d);
+  });
+}
+
+// ── BANNER ───────────────────────────────────────────────
+function banner(msg,cls,ms=3500){
+  const a=document.getElementById('ban');
+  a.innerHTML=`<div class="banner ${cls}">${msg}</div>`;
+  if(ms>0)setTimeout(()=>{if(a.firstChild)a.innerHTML='';},ms);
+}
+
+// ── RENDER ───────────────────────────────────────────────
+function render(){
+  const s=ST[G.cur];
+  const box=document.getElementById('station');
+  box.className='fade-up';void box.offsetWidth;
+
+  let inner='';
+
+  // Station 1: minimal (embedded video + input)
+  if(s.minimal){
+    box.innerHTML=`
+      <div class="card" style="text-align:center;">
+        <div style="position:relative;width:100%;padding-bottom:56.25%;border-radius:10px;overflow:hidden;margin-bottom:.85rem;">
+          <iframe
+            src="${YT_EMBED}"
+            title="THE GAME STARTS HERE"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowfullscreen
+            style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius:10px;">
+          </iframe>
+        </div>
+        <p style="font-size:.9rem;color:var(--txt-m);">Watch the video to find out what you're looking for.</p>
+      </div>
+      <div class="card">
+        <p style="font-size:.95rem;font-weight:600;color:var(--txt);margin-bottom:.75rem;">Enter code</p>
+        <input class="field" id="ans" placeholder="${s.ph}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" maxlength="80" style="margin-bottom:.85rem;">
+        <button class="btn btn-go" onclick="checkAns()">Submit Answer</button>
+      </div>
+      <button class="btn btn-ghost" onclick="useHint()" style="margin-top:.25rem;">💡 Need a Hint? &nbsp;(+10 min to your time)</button>
+      <div class="hint-box" id="hbox"><p id="htxt"></p></div>`;
+    document.getElementById('ans').addEventListener('keydown',e=>{if(e.key==='Enter')checkAns();});
+    return;
+  }
+
+  // Story block
+  if(s.story) inner+=`<div class="card"><p class="body">${s.story}</p></div>`;
+
+  // Choices (station 6)
+  if(s.choices){
+    inner+=`<div class="card" style="display:flex;flex-direction:column;gap:.6rem;">`;
+    s.choices.forEach((c,i)=>{
+      const isCorrect = i===s.choiceCorrect;
+      inner+=`<div class="inset" style="font-size:1rem;color:${isCorrect?'var(--txt)':'var(--txt-m)'};${isCorrect?'border-color:var(--acc-d);':''}">${c}</div>`;
+    });
+    inner+=`</div>`;
+  }
+
+  // Cipher block
+  if(s.cipher) inner+=`<div class="card"><div class="cipher">${s.cipher}</div></div>`;
+
+  // Poem block
+  if(s.poem) inner+=`<div class="card"><div class="poem-block">${s.poem.replace(/\n/g,'<br>')}</div></div>`;
+
+  // Input / GPS
+  if(s.gps){
+    inner+=`<div class="card">${gpsBlock()}</div>`;
+  } else {
+    inner+=`
+      <div class="card">
+        <p style="font-size:.95rem;font-weight:600;color:var(--txt);margin-bottom:.75rem;">Enter code</p>
+        <input class="field" id="ans" placeholder="${s.ph}" autocomplete="off" autocorrect="off" autocapitalize="off" spellcheck="false" maxlength="80" style="margin-bottom:.85rem;">
+        <button class="btn btn-go" onclick="checkAns()">Submit Answer</button>
+      </div>`;
+  }
+
+  inner+=`
+    <button class="btn btn-ghost" onclick="useHint()" style="margin-top:.25rem;">💡 Need a Hint? &nbsp;(+10 min to your time)</button>
+    <div class="hint-box" id="hbox"><p id="htxt"></p></div>`;
+
+  box.innerHTML=inner;
+
+  if(!s.gps){
+    const inp=document.getElementById('ans');
+    if(inp) inp.addEventListener('keydown',e=>{if(e.key==='Enter')checkAns();});
+  } else {
+    const pi=document.getElementById('photo-inp');
+    if(pi) pi.addEventListener('change',handlePhoto);
+  }
+}
+
+function gpsBlock(){
+  return `
+    <p style="font-size:.95rem;font-weight:600;color:var(--txt);margin-bottom:1rem;">${ST[6].task}</p>
+    <button class="btn btn-ghost" id="gps-btn" onclick="doGPS()" style="margin-bottom:.6rem;">
+      📡 Tap here to verify your GPS location
+    </button>
+    <div id="gst" style="font-size:.85rem;color:var(--txt-m);text-align:center;min-height:1.2rem;margin-bottom:.75rem;"></div>
+    <label for="photo-inp" id="photo-lbl" class="btn btn-ghost" style="cursor:pointer;">
+      📸 Upload your photo
+    </label>
+    <input type="file" id="photo-inp" accept="image/*" capture="environment" style="display:none;">
+    <img id="photo-prev" alt="photo preview">
+    <button class="btn btn-go pulse" id="fin-btn" onclick="finishGame()" disabled style="margin-top:1rem;">
+      🌿&nbsp; Release the antidote and win!
+    </button>`;
+}
+
+// ── ANSWER CHECK ─────────────────────────────────────────
+function checkAns(){
+  const el=document.getElementById('ans');if(!el)return;
+  const given=norm(el.value);if(!given){shakeEl(el);return;}
+  const s=ST[G.cur];
+  if(s.ans.some(a=>norm(a)===given)){
+    G.score+=s.pts;G.cur++;
+    refreshHead();refreshDots();
+    if(G.cur>=ST.length){endGame();return;}
+    render();
+    banner('✓ '+s.next,'ok',3500);
+    window.scrollTo({top:0,behavior:'smooth'});
+  }else{
+    shakeEl(el);
+    banner('✗ Wrong answer – try again or use a hint.','err',2800);
+    el.value='';el.focus();
+  }
+}
+function shakeEl(el){el.classList.add('shake-it');setTimeout(()=>el.classList.remove('shake-it'),450);}
+
+// ── HINT ─────────────────────────────────────────────────
+function useHint(){
+  const s=ST[G.cur];
+  if(!G.hintIdx[G.cur])G.hintIdx[G.cur]=0;
+  const idx=G.hintIdx[G.cur]%s.hints.length;
+  const hb=document.getElementById('hbox');
+  const ht=document.getElementById('htxt');
+  if(hb&&ht){ht.textContent=s.hints[idx];hb.style.display='block';}
+  G.hintIdx[G.cur]++;G.hints++;
+  G.hintPenalty=(G.hintPenalty||0)+600;
+  banner('⏱ Hint used – <strong>+10 minutes</strong> added to your final time!','tip',3000);
+  refreshHead();
+}
+
+// ── GPS ──────────────────────────────────────────────────
+function doGPS(){
+  const btn=document.getElementById('gps-btn'),st=document.getElementById('gst');
+  btn.textContent='⏳ Locating…';btn.disabled=true;
+  st.textContent='Waiting for GPS signal…';
+  if(!navigator.geolocation){approveGPS(null);return;}
+  navigator.geolocation.getCurrentPosition(
+    pos=>{
+      const d=haversine(pos.coords.latitude,pos.coords.longitude,ST[6].gpsTarget.lat,ST[6].gpsTarget.lng);
+      if(d<=ST[6].gpsTarget.r){approveGPS(d);}
+      else{st.style.color='var(--bad)';st.textContent=`You are ${Math.round(d)}m from the terrace – get closer!`;btn.textContent='📡 Try again';btn.disabled=false;}
+    },
+    ()=>approveGPS(null),
+    {timeout:12000,enableHighAccuracy:true}
+  );
+}
+function approveGPS(dist){
+  G.gpsOk=true;
+  const btn=document.getElementById('gps-btn'),st=document.getElementById('gst');
+  btn.textContent='✅ GPS location verified!';btn.style.color='var(--acc)';btn.style.borderColor='var(--acc-d)';
+  st.style.color='var(--acc)';
+  st.textContent=dist!=null?`✓ Distance: ${Math.round(dist)}m`:'✓ GPS approved';
+  tryUnlock();
+}
+function haversine(la1,lo1,la2,lo2){
+  const R=6371000,dL=(la2-la1)*Math.PI/180,dl=(lo2-lo1)*Math.PI/180;
+  const a=Math.sin(dL/2)**2+Math.cos(la1*Math.PI/180)*Math.cos(la2*Math.PI/180)*Math.sin(dl/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
+// ── PHOTO ────────────────────────────────────────────────
+function handlePhoto(e){
+  const f=e.target.files[0];if(!f)return;
+  const r=new FileReader();
+  r.onload=ev=>{
+    G.photoOk=true;
+    const pv=document.getElementById('photo-prev');
+    if(pv){pv.src=ev.target.result;pv.style.display='block';}
+    const lbl=document.getElementById('photo-lbl');
+    if(lbl){lbl.textContent='✅ Photo uploaded!';lbl.style.color='var(--acc)';lbl.style.borderColor='var(--acc-d)';}
+    tryUnlock();
+  };
+  r.readAsDataURL(f);
+}
+function tryUnlock(){
+  if(!G.photoOk)return;
+  const btn=document.getElementById('fin-btn');
+  if(btn)btn.disabled=false;
+}
+function finishGame(){
+  if(!G.photoOk){banner('📸 Please upload a photo first!','err');return;}
+  G.score+=ST[6].pts;G.cur=ST.length;endGame();
+}
+
+// ── FLOW ─────────────────────────────────────────────────
+function startGame(){
+  const n=document.getElementById('team-name').value.trim();
+  if(!n){
+    const inp=document.getElementById('team-name');
+    inp.classList.add('shake-it');
+    setTimeout(()=>inp.classList.remove('shake-it'),450);
+    inp.placeholder='Please enter a team name!';
+    return;
+  }
+  clearInterval(G.timerRef);
+  G={team:n,cur:0,score:700,hints:0,hintPenalty:0,timerRef:null,startMs:0,elapsed:0,photoOk:false,gpsOk:false,hintIdx:[]};
+  show('s-game');hide('s-intro');hide('s-win');
+  refreshHead();refreshDots();render();startTimer();
+  window.scrollTo({top:0});
+}
+
+function endGame(){
+  clearInterval(G.timerRef);hide('s-game');
+  const ws=document.getElementById('s-win');
+  ws.style.display='flex';ws.style.flexDirection='column';ws.style.alignItems='center';ws.style.justifyContent='center';
+  document.getElementById('v-score').textContent=Math.max(0,G.score);
+  const totalSec=G.elapsed+G.hintPenalty;
+  const m=Math.floor(totalSec/60),s=totalSec%60;
+  const pen=G.hintPenalty>0?` (+${G.hintPenalty/60} min)`:'';
+  document.getElementById('v-time').textContent=f2(m)+':'+f2(s)+pen;
+  document.getElementById('v-hints').textContent=G.hints>0?G.hints+' × +10 min':'0';
+  document.getElementById('v-learn').innerHTML=LEARNINGS.map(l=>`<div>${l}</div>`).join('');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+function resetGame(){
+  clearInterval(G.timerRef);
+  document.getElementById('language-screen').style.display = 'flex';
+  hide('s-intro');
+  hide('s-game');
+  hide('s-win');
+}
+
+function show(id){
+  const el=document.getElementById(id);
+  el.style.display = id==='s-game' ? 'block' : 'flex';
+  if(id==='s-win'||id==='s-intro'){ el.style.flexDirection='column'; el.style.alignItems='center'; el.style.justifyContent='center'; }
+  const tb=document.getElementById('timer-bar');
+  if(tb) tb.style.display = id==='s-game' ? 'flex' : 'none';
+}
+function hide(id){document.getElementById(id).style.display='none';}
+
+// ── KEYBOARD / SCROLL ────────────────────────────────────
+document.addEventListener('DOMContentLoaded',()=>{
+  const inp=document.getElementById('team-name');
+  if(inp) inp.addEventListener('keydown',e=>{if(e.key==='Enter')startGame();});
+  document.addEventListener('focusin',e=>{
+    if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'){
+      setTimeout(()=>e.target.scrollIntoView({behavior:'smooth',block:'center'}),350);
+    }
+  });
+});
+
+// ── PWA SERVICE WORKER ───────────────────────────────────
+if('serviceWorker'in navigator){
+  const sw=`const C='escape-lib-en-v4';
+self.addEventListener('install',e=>e.waitUntil(caches.open(C).then(c=>c.addAll(['.']))));
+self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));`;
+  const blob=new Blob([sw],{type:'application/javascript'});
+  navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(()=>{});
+}
+</script>
+</body>
+</html><!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CZU Library Escape Game</title>
+  <style>
+    /* Styling pro prvotní obrazovku výběru jazyka */
+    #language-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background-color: #1a1a2e;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 9999;
+      text-align: center;
+      padding: 20px;
+    }
+
+    #language-screen h1 {
+      font-size: 2.2rem;
+      margin-bottom: 10px;
+    }
+
+    #language-screen p {
+      font-size: 1.1rem;
+      margin-bottom: 30px;
+      color: #cccccc;
+    }
+
+    .lang-buttons {
+      display: flex;
+      gap: 20px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    .lang-btn {
+      background-color: #0f3460;
+      color: #ffffff;
+      border: 2px solid #e94560;
+      padding: 15px 30px;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      min-width: 160px;
+    }
+
+    .lang-btn:hover {
+      background-color: #e94560;
+      transform: scale(1.05);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- 1. OBRAZOVKA VÝBĚRU JAZYKA (LANGUAGE SELECT SCREEN) -->
+  <div id="language-screen">
+    <h1>CZU Library Escape Game</h1>
+    <p>Select your language / Vyberte si jazyk hry</p>
+    
+    <div class="lang-buttons">
+      <!-- Tlačítko pro češtinu přesměruje na index.html -->
+      <button class="lang-btn" onclick="selectLanguage('cs')">🇨🇿 Čeština</button>
+      <!-- Tlačítko pro angličtinu skryje rozcestník a spustí anglickou hru -->
+      <button class="lang-btn" onclick="selectLanguage('en')">🇬🇧 English</button>
+    </div>
+  </div>
+
+  <!-- MAIN GAME SCREEN (Anglická verze) -->
+  <div id="game-main-content" style="display: none;">
+    <h1>CZU Library Escape Game</h1>
+    <p>Welcome to the Mission!</p>
+    <p>A rogue researcher has hidden a secret code inside the library system. Watch the introductory video carefully and find the antidote before time runs out!</p>
+
+    <button id="start-btn">Start Mission</button>
+
+    <div id="station-1">
+      <h2>Station 1</h2>
+      <p>Task loading...</p>
+      <input type="text" placeholder="Enter code">
+      <button>Submit Answer</button>
+      <button>Need a Hint?</button>
+    </div>
+  </div>
+
+  <script>
+    function selectLanguage(lang) {
+      if (lang === 'cs') {
+        // Přesměrování na českou verzi (např. index.html)
+        window.location.href = 'index.html';
+      } else if (lang === 'en') {
+        // Skrytí výběru jazyka a zobrazení anglické hry
+        document.getElementById('language-screen').style.display = 'none';
+        document.getElementById('game-main-content').style.display = 'block';
+      }
+    }
+  </script>
+
+</body>
+</html>
