@@ -152,7 +152,7 @@ body {
 .btn:active { transform: scale(.97); }
 .btn:disabled { opacity: .35; cursor: not-allowed; transform: none; }
 
-.btn-go   { background: var(--acc);   color: var(--acc-txt); }
+.btn-go    { background: var(--acc);   color: var(--acc-txt); }
 .btn-go:not(:disabled):hover { opacity: .9; }
 
 .btn-ghost {
@@ -162,13 +162,6 @@ body {
 }
 .btn-ghost:not(:disabled):hover { border-color: var(--bor2); color: var(--txt); }
 
-.btn-video {
-  background: #ef4444;
-  color: #fff;
-  font-size: 1.05rem;
-}
-.btn-video:hover { opacity: .9; }
-
 /* ── INPUT ── */
 .field {
   background: var(--bg);
@@ -176,7 +169,7 @@ body {
   border-radius: var(--radius-s);
   color: var(--txt);
   font-family: 'Inter', sans-serif;
-  font-size: 18px;        /* min 16px prevents iOS zoom */
+  font-size: 18px;
   font-weight: 500;
   padding: .9rem 1rem;
   width: 100%;
@@ -269,23 +262,12 @@ body {
 .pulse    { animation: pulse 2s ease-in-out infinite; }
 
 /* ── SCREENS ── */
-#s-intro {
-  display: none;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-}
-#s-game {
-  display: none;
-}
-#s-win {
-  display: none;
-}
+#s-intro { display: flex; flex-direction: column; align-items: center; justify-content: center; }
+#s-game  { display: none; }
+#s-win   { display: none; }
 
-/* game screen children always stack vertically */
 #s-game > * { display: block; width: 100%; }
 
-/* ── SAFE AREA (notch phones) ── */
 @supports (padding: env(safe-area-inset-bottom)) {
   #s-game  { padding-bottom: calc(2rem + env(safe-area-inset-bottom)); }
   #s-intro { padding-bottom: calc(1.5rem + env(safe-area-inset-bottom)); }
@@ -333,7 +315,7 @@ body {
 <!-- ═══════════════ GAME ════════════════ -->
 <div id="s-game" class="page">
 
-  <!-- Header: team + score only -->
+  <!-- Header -->
   <div id="hdr" style="background:var(--sur);border-bottom:1.5px solid var(--bor);padding:.75rem 1rem;position:sticky;top:0;z-index:50;">
     <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:.5rem;">
       <div>
@@ -348,18 +330,18 @@ body {
     <div style="background:var(--bor);border-radius:2px;height:4px;"><div id="pb" style="width:0%;"></div></div>
   </div>
 
-  <!-- Dots – horizontal, left aligned -->
+  <!-- Dots -->
   <div style="padding:.75rem 1rem .25rem;">
     <div id="dots" style="display:flex;flex-direction:row;flex-wrap:wrap;gap:6px;justify-content:flex-start;align-items:center;"></div>
   </div>
 
-  <!-- Content – full width, padding at bottom for timer bar -->
+  <!-- Content -->
   <div style="padding:.5rem 1rem 8rem;flex:1;">
     <div id="ban"></div>
     <div id="station" class="fade-up"></div>
   </div>
 
-  <!-- Fixed bottom timer bar -->
+  <!-- Timer Bar -->
   <div id="timer-bar" style="
     position:fixed;bottom:0;left:0;right:0;z-index:100;
     background:var(--sur);
@@ -422,30 +404,24 @@ body {
 
 <!-- ═══════════════ SCRIPT ════════════════ -->
 <script>
-// ── LANGUAGE SWITCHING ───────────────────────────────────
 function selectLanguage(lang) {
-  if (lang === 'en') {
-    document.getElementById('language-screen').style.display = 'none';
-    show('s-intro');
-  } else if (lang === 'cs') {
+  if (lang === 'cs') {
     window.location.href = 'index.html';
+  } else if (lang === 'en') {
+    document.getElementById('language-screen').style.display = 'none';
   }
 }
 
-// ── NORMALIZATION ────────────────────────────────────────
 function norm(raw){
   return raw.trim().toLowerCase()
     .normalize('NFD').replace(/[\u0300-\u036f]/g,'')
-    .replace(/doi[\s\n\r:]*/g,'')   // strip DOI, DOI:, DOI10, DOI 10 etc.
+    .replace(/doi[\s\n\r:]*/g,'')
     .replace(/\s+/g,'');
 }
 
-// ── VIDEO ID (single source of truth) ────────────────────
 const VIDEO_ID = 'D_jJNjGSSv0';
-const YT_URL   = 'https://www.youtube.com/watch?v=' + VIDEO_ID;
-const YT_EMBED = 'https://www.youtube.com/embed/'   + VIDEO_ID + '?rel=0&modestbranding=1';
+const YT_EMBED = 'https://www.youtube.com/embed/' + VIDEO_ID + '?rel=0&modestbranding=1';
 
-// ── STATION DATA ─────────────────────────────────────────
 const ST = [
   {
     id:1, name:'Circulation Desk', pts:100,
@@ -554,10 +530,8 @@ const LEARNINGS=[
   '✅ Photo proof from the terrace – mission complete! 📸'
 ];
 
-// ── STATE ────────────────────────────────────────────────
 let G={team:'',cur:0,score:700,hints:0,hintPenalty:0,timerRef:null,startMs:0,elapsed:0,photoOk:false,gpsOk:false,hintIdx:[]};
 
-// ── TIMER ────────────────────────────────────────────────
 function startTimer(){
   G.startMs=Date.now();
   G.timerRef=setInterval(()=>{
@@ -570,9 +544,7 @@ function startTimer(){
   },1000);
 }
 function f2(n){return String(n).padStart(2,'0');}
-function elStr(){const m=Math.floor(G.elapsed/60),s=G.elapsed%60;return f2(m)+':'+f2(s);}
 
-// ── HEAD / DOTS ──────────────────────────────────────────
 function refreshHead(){
   document.getElementById('h-team').textContent=G.team;
   document.getElementById('h-score').textContent=Math.max(0,G.score);
@@ -589,14 +561,12 @@ function refreshDots(){
   });
 }
 
-// ── BANNER ───────────────────────────────────────────────
 function banner(msg,cls,ms=3500){
   const a=document.getElementById('ban');
   a.innerHTML=`<div class="banner ${cls}">${msg}</div>`;
   if(ms>0)setTimeout(()=>{if(a.firstChild)a.innerHTML='';},ms);
 }
 
-// ── RENDER ───────────────────────────────────────────────
 function render(){
   const s=ST[G.cur];
   const box=document.getElementById('station');
@@ -604,7 +574,6 @@ function render(){
 
   let inner='';
 
-  // Station 1: minimal (embedded video + input)
   if(s.minimal){
     box.innerHTML=`
       <div class="card" style="text-align:center;">
@@ -613,7 +582,6 @@ function render(){
             src="${YT_EMBED}"
             title="THE GAME STARTS HERE"
             frameborder="0"
-            referrerpolicy="strict-origin-when-cross-origin"
             allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
             allowfullscreen
             style="position:absolute;top:0;left:0;width:100%;height:100%;border-radius:10px;">
@@ -632,10 +600,8 @@ function render(){
     return;
   }
 
-  // Story block
   if(s.story) inner+=`<div class="card"><p class="body">${s.story}</p></div>`;
 
-  // Choices (station 6)
   if(s.choices){
     inner+=`<div class="card" style="display:flex;flex-direction:column;gap:.6rem;">`;
     s.choices.forEach((c,i)=>{
@@ -645,13 +611,9 @@ function render(){
     inner+=`</div>`;
   }
 
-  // Cipher block
   if(s.cipher) inner+=`<div class="card"><div class="cipher">${s.cipher}</div></div>`;
-
-  // Poem block
   if(s.poem) inner+=`<div class="card"><div class="poem-block">${s.poem.replace(/\n/g,'<br>')}</div></div>`;
 
-  // Input / GPS
   if(s.gps){
     inner+=`<div class="card">${gpsBlock()}</div>`;
   } else {
@@ -695,7 +657,6 @@ function gpsBlock(){
     </button>`;
 }
 
-// ── ANSWER CHECK ─────────────────────────────────────────
 function checkAns(){
   const el=document.getElementById('ans');if(!el)return;
   const given=norm(el.value);if(!given){shakeEl(el);return;}
@@ -715,7 +676,6 @@ function checkAns(){
 }
 function shakeEl(el){el.classList.add('shake-it');setTimeout(()=>el.classList.remove('shake-it'),450);}
 
-// ── HINT ─────────────────────────────────────────────────
 function useHint(){
   const s=ST[G.cur];
   if(!G.hintIdx[G.cur])G.hintIdx[G.cur]=0;
@@ -729,7 +689,6 @@ function useHint(){
   refreshHead();
 }
 
-// ── GPS ──────────────────────────────────────────────────
 function doGPS(){
   const btn=document.getElementById('gps-btn'),st=document.getElementById('gst');
   btn.textContent='⏳ Locating…';btn.disabled=true;
@@ -759,7 +718,6 @@ function haversine(la1,lo1,la2,lo2){
   return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
 }
 
-// ── PHOTO ────────────────────────────────────────────────
 function handlePhoto(e){
   const f=e.target.files[0];if(!f)return;
   const r=new FileReader();
@@ -783,7 +741,6 @@ function finishGame(){
   G.score+=ST[6].pts;G.cur=ST.length;endGame();
 }
 
-// ── FLOW ─────────────────────────────────────────────────
 function startGame(){
   const n=document.getElementById('team-name').value.trim();
   if(!n){
@@ -831,133 +788,10 @@ function show(id){
 }
 function hide(id){document.getElementById(id).style.display='none';}
 
-// ── KEYBOARD / SCROLL ────────────────────────────────────
 document.addEventListener('DOMContentLoaded',()=>{
   const inp=document.getElementById('team-name');
   if(inp) inp.addEventListener('keydown',e=>{if(e.key==='Enter')startGame();});
-  document.addEventListener('focusin',e=>{
-    if(e.target.tagName==='INPUT'||e.target.tagName==='TEXTAREA'){
-      setTimeout(()=>e.target.scrollIntoView({behavior:'smooth',block:'center'}),350);
-    }
-  });
 });
-
-// ── PWA SERVICE WORKER ───────────────────────────────────
-if('serviceWorker'in navigator){
-  const sw=`const C='escape-lib-en-v4';
-self.addEventListener('install',e=>e.waitUntil(caches.open(C).then(c=>c.addAll(['.']))));
-self.addEventListener('fetch',e=>e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request))));`;
-  const blob=new Blob([sw],{type:'application/javascript'});
-  navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(()=>{});
-}
 </script>
-</body>
-</html><!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>CZU Library Escape Game</title>
-  <style>
-    /* Styling pro prvotní obrazovku výběru jazyka */
-    #language-screen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-color: #1a1a2e;
-      color: #ffffff;
-      display: flex;
-      flex-direction: column;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-      text-align: center;
-      padding: 20px;
-    }
-
-    #language-screen h1 {
-      font-size: 2.2rem;
-      margin-bottom: 10px;
-    }
-
-    #language-screen p {
-      font-size: 1.1rem;
-      margin-bottom: 30px;
-      color: #cccccc;
-    }
-
-    .lang-buttons {
-      display: flex;
-      gap: 20px;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
-
-    .lang-btn {
-      background-color: #0f3460;
-      color: #ffffff;
-      border: 2px solid #e94560;
-      padding: 15px 30px;
-      font-size: 1.2rem;
-      font-weight: bold;
-      border-radius: 8px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      min-width: 160px;
-    }
-
-    .lang-btn:hover {
-      background-color: #e94560;
-      transform: scale(1.05);
-    }
-  </style>
-</head>
-<body>
-
-  <!-- 1. OBRAZOVKA VÝBĚRU JAZYKA (LANGUAGE SELECT SCREEN) -->
-  <div id="language-screen">
-    <h1>CZU Library Escape Game</h1>
-    <p>Select your language / Vyberte si jazyk hry</p>
-    
-    <div class="lang-buttons">
-      <!-- Tlačítko pro češtinu přesměruje na index.html -->
-      <button class="lang-btn" onclick="selectLanguage('cs')">🇨🇿 Čeština</button>
-      <!-- Tlačítko pro angličtinu skryje rozcestník a spustí anglickou hru -->
-      <button class="lang-btn" onclick="selectLanguage('en')">🇬🇧 English</button>
-    </div>
-  </div>
-
-  <!-- MAIN GAME SCREEN (Anglická verze) -->
-  <div id="game-main-content" style="display: none;">
-    <h1>CZU Library Escape Game</h1>
-    <p>Welcome to the Mission!</p>
-    <p>A rogue researcher has hidden a secret code inside the library system. Watch the introductory video carefully and find the antidote before time runs out!</p>
-
-    <button id="start-btn">Start Mission</button>
-
-    <div id="station-1">
-      <h2>Station 1</h2>
-      <p>Task loading...</p>
-      <input type="text" placeholder="Enter code">
-      <button>Submit Answer</button>
-      <button>Need a Hint?</button>
-    </div>
-  </div>
-
-  <script>
-    function selectLanguage(lang) {
-      if (lang === 'cs') {
-        // Přesměrování na českou verzi (např. index.html)
-        window.location.href = 'index.html';
-      } else if (lang === 'en') {
-        // Skrytí výběru jazyka a zobrazení anglické hry
-        document.getElementById('language-screen').style.display = 'none';
-        document.getElementById('game-main-content').style.display = 'block';
-      }
-    }
-  </script>
-
 </body>
 </html>
